@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Warehouse.Server.Manager (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Warehouse.Server.Manager (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

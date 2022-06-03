@@ -1,0 +1,25 @@
+﻿<Page
+    x:Class="Warehouse.Server.Manager.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Warehouse.Server.Manager.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <NavigationView
+        SelectedItem="{Binding SelectedNavViewItem, Mode=TwoWay}"
+        Header="{Binding NavViewHeader}"
+    >
+        <NavigationView.MenuItems>
+            <NavigationViewItem IsSelected="True" Icon="Home" Content="Home" Tag="Home" />
+            <NavigationViewItem Icon="SelectAll" Content="In stock" Tag="In stock" />
+            <NavigationViewItem Icon="NewWindow" Content="On stock" Tag="On stock" />
+            <NavigationViewItem Icon="Clear" Content="Out of stock" Tag="Out of stock" />
+        </NavigationView.MenuItems>
+        <ScrollViewer>
+            <Frame x:Name="frame"></Frame>
+        </ScrollViewer>
+    </NavigationView>
+</Page>
