@@ -19,7 +19,6 @@ public class Program
 
         var client = Provider.GetRequiredService<ISocketClient>();
         client.Connect("localhost", 4242);
-        for (; ; )
-            ;
+        Console.ReadKey();
     }
 }

@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using Warehouse.Shared.BinaryHelpers;
 
 namespace Warehouse.Client.SocketClients;
@@ -32,14 +31,6 @@ public class SocketClient : ISocketClient
             }
             socket.Connect(remoteEP);
             Console.WriteLine($"Socket connected to {socket.RemoteEndPoint}");
-            socket.Send(Encoding.ASCII.GetBytes("OK"));
-            socket.Send(Encoding.ASCII.GetBytes("OK2"));
-            socket.Send(Encoding.ASCII.GetBytes("OK3"));
-            socket.Send(Encoding.ASCII.GetBytes("OK4"));
-            socket.Send(Encoding.ASCII.GetBytes("OK5"));
-            socket.Send(Encoding.ASCII.GetBytes("OK6"));
-            socket.Shutdown(SocketShutdown.Receive);
-            socket.Close();
             return socket;
         }
         catch
