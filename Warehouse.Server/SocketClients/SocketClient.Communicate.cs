@@ -37,14 +37,13 @@ public partial class SocketClient : IDisposable
             Disconnect();
             return;
         }
-        Console.WriteLine(client.ReceiveBufferSize + " " + client.SendBufferSize);
         if (read > 0)
         {
             receiveOffset += read;
         }
-        else if (receiveOffset != 0)
+        else
         {
-            Console.WriteLine($"Read {Encoding.ASCII.GetString(receiveBuffer)}");
+            // TODO: buffer is fulfilled, do something
             receiveOffset = 0;
             Array.Clear(receiveBuffer);
         }
