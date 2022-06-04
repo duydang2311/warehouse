@@ -10,7 +10,7 @@ public class Program
     public static void Main()
     {
         var services = new ServiceCollection();
-        services.WithBinaryHelpers().WithSocketListeners("localhost", 4242);
+        services.WithBinaryHelpers().WithSocketListeners("localhost", 4242).WithSocketClients();
         Provider = services.BuildServiceProvider();
 
         var listener = Provider.GetRequiredService<SocketListener>();
