@@ -13,7 +13,7 @@ public static partial class ExtendServiceCollection
         int port
     )
     {
-        self.AddSingleton<SocketListener>(
+        self.AddSingleton<ISocketListener, SocketListener>(
             provider =>
                 new SocketListener(
                     provider.GetRequiredService<IServiceFactory<Socket, ISocketClient>>(),

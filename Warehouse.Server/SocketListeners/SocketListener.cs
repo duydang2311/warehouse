@@ -5,7 +5,7 @@ using Warehouse.Shared.Services;
 
 namespace Warehouse.Server.SocketListeners;
 
-public sealed partial class SocketListener
+public partial class SocketListener : ISocketListener
 {
     public List<ISocketClient> Clients { get; }
     private readonly Socket listener;

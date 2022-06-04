@@ -1,6 +1,6 @@
 namespace Warehouse.Server.SocketListeners;
 
-public sealed partial class SocketListener
+public partial class SocketListener : ISocketListener
 {
     private bool acceptBegun = false;
 
