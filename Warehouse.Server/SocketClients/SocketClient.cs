@@ -6,6 +6,10 @@ public partial class SocketClient : ISocketClient
 {
     private readonly Socket client;
     private bool disposed;
+    public Socket Client
+    {
+        get => client;
+    }
 
     public SocketClient(Socket client)
     {
