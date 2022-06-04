@@ -13,7 +13,7 @@ public class Program
         services.WithBinaryHelpers().WithSocketListeners("localhost", 4242).WithSocketClients();
         Provider = services.BuildServiceProvider();
 
-        var listener = Provider.GetRequiredService<SocketListener>();
+        var listener = Provider.GetRequiredService<ISocketListener>();
         listener.Listen();
         Console.ReadKey();
     }
