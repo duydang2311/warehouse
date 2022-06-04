@@ -5,6 +5,6 @@ namespace Warehouse.Server.SocketClients;
 public interface ISocketClient : IDisposable
 {
     Socket Client { get; }
-    event Action<ISocketClient>? DisconnectedEvent;
+    event Action<ISocketClient>? DisconnectEvent;
     void Disconnect();
 }
