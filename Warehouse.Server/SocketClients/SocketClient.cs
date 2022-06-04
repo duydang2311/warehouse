@@ -4,12 +4,12 @@ namespace Warehouse.Server.SocketClients;
 
 public partial class SocketClient : ISocketClient
 {
-    private readonly Socket socket;
+    private readonly Socket client;
     private bool disposed;
 
-    public SocketClient(Socket socket)
+    public SocketClient(Socket client)
     {
-        this.socket = socket;
+        this.client = client;
         InitCommunicateInternal();
     }
 
@@ -17,8 +17,9 @@ public partial class SocketClient : ISocketClient
     {
         if (!disposed)
         {
-            socket.Close();
-            socket.Dispose();
+            client.Shutdown(SocketShutdown.Both);
+            client.Close();
+            client.Dispose();
             disposed = true;
         }
     }

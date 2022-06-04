@@ -5,8 +5,8 @@ namespace Warehouse.Server.SocketClients;
 
 public class SocketClientFactory : IServiceFactory<Socket, ISocketClient>
 {
-    public ISocketClient GetService(Socket socket)
+    public ISocketClient GetService(Socket client)
     {
-        return new SocketClient(socket);
+        return new SocketClient(client);
     }
 }
