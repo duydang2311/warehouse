@@ -1,39 +1,28 @@
-using System.Text;
-using Warehouse.Server.SocketClients;
-
 namespace Warehouse.Server.SocketListeners;
 
 public sealed partial class SocketListener
 {
-    private bool listening = false;
-    private Thread listenThread = null!;
+    private bool acceptBegun = false;
 
     public void Listen()
     {
-        if (listening)
+        if (acceptBegun)
         {
-            if (listenThread is not null)
-            {
-                return;
-            }
+            return;
         }
-        Console.WriteLine("Listen...");
-        listening = true;
-        listenThread = new Thread(ListenThread) { IsBackground = true };
-        listenThread.Start();
+        acceptBegun = true;
+        Console.WriteLine("Listening for connections...");
+        listener.Listen(0);
+        listener.BeginAccept(new AsyncCallback(AcceptCallback), null);
     }
 
-    private void ListenThread()
+    private void AcceptCallback(IAsyncResult result)
     {
-        for (; ; )
-        {
-            Console.WriteLine("Waiting for client...");
-            while (!listening)
-                ;
-            listener.Listen(0);
-            var client = listener.Accept();
-            Clients.Add(socketClientFactory.GetService(client));
-            Console.WriteLine($"{client.RemoteEndPoint} connected");
-        }
+        var client = listener.EndAccept(result);
+        Clients.Add(socketClientFactory.GetService(client));
+        Console.WriteLine($"{client.RemoteEndPoint} connected");
+
+        listener.Listen(0);
+        listener.BeginAccept(new AsyncCallback(AcceptCallback), null);
     }
 }
