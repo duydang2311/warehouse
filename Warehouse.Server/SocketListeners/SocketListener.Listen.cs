@@ -19,7 +19,9 @@ public partial class SocketListener : ISocketListener
     private void AcceptCallback(IAsyncResult result)
     {
         var client = listener.EndAccept(result);
-        Clients.Add(socketClientFactory.GetService(client));
+        var socketClient = socketClientFactory.GetService(client);
+        socketClient.DisconnectEvent += SocketClient_DisconnectEvent;
+        Clients.Add(socketClient);
         Console.WriteLine($"{client.RemoteEndPoint} connected");
 
         listener.Listen(0);
