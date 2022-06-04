@@ -32,7 +32,7 @@ public sealed partial class SocketListener
                 ;
             listener.Listen(0);
             var client = listener.Accept();
-            Clients.Add(new SocketClient(client));
+            Clients.Add(socketClientFactory.GetService(client));
             Console.WriteLine($"{client.RemoteEndPoint} connected");
         }
     }

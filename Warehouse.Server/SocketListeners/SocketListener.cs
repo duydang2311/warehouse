@@ -1,17 +1,24 @@
 using System.Net;
 using System.Net.Sockets;
 using Warehouse.Server.SocketClients;
+using Warehouse.Shared.Services;
 
 namespace Warehouse.Server.SocketListeners;
 
 public sealed partial class SocketListener
 {
-    public List<SocketClient> Clients { get; }
+    public List<ISocketClient> Clients { get; }
     private readonly Socket listener;
+    private readonly IServiceFactory<Socket, ISocketClient> socketClientFactory;
 
-    public SocketListener(string hostname, int port)
+    public SocketListener(
+        IServiceFactory<Socket, ISocketClient> socketClientFactory,
+        string hostname,
+        int port
+    )
     {
-        Clients = new List<SocketClient>();
+        this.socketClientFactory = socketClientFactory;
+        Clients = new List<ISocketClient>();
         var host = Dns.GetHostEntry(hostname);
         var ipAddress = host.AddressList[0];
         var localEP = new IPEndPoint(ipAddress, port);
