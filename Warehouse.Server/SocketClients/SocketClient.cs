@@ -2,7 +2,7 @@ using System.Net.Sockets;
 
 namespace Warehouse.Server.SocketClients;
 
-public partial class SocketClient : IDisposable
+public partial class SocketClient : ISocketClient
 {
     private readonly Socket socket;
     private bool disposed;
