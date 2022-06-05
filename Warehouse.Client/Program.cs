@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Warehouse.Client.SocketClients;
+using Warehouse.Client.ClientSockets;
 using Warehouse.Shared.BinaryHelpers;
 
 namespace Warehouse.Client;
@@ -17,7 +17,7 @@ public class Program
         services.WithBinaryHelpers().WithSockets().WithSocketClients();
         Provider = services.BuildServiceProvider();
 
-        var client = Provider.GetRequiredService<ISocketClient>();
+        var client = Provider.GetRequiredService<IClientSocket>();
         if (!await client.Connect("localhost", 4242))
         {
             Console.WriteLine("Connection failed");

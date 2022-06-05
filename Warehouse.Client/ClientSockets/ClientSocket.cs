@@ -2,11 +2,11 @@ using System.Net;
 using System.Net.Sockets;
 using Warehouse.Shared.Services;
 
-namespace Warehouse.Client.SocketClients;
+namespace Warehouse.Client.ClientSockets;
 
 using Warehouse.Shared.Sockets;
 
-public class SocketClient : ISocketClient
+public class ClientSocket : IClientSocket
 {
     private ISocket? socket;
     private readonly IServiceFactory<
@@ -16,7 +16,7 @@ public class SocketClient : ISocketClient
         ISocket
     > socketFactory;
 
-    public SocketClient(
+    public ClientSocket(
         IServiceFactory<AddressFamily, SocketType, ProtocolType, ISocket> socketFactory
     )
     {
