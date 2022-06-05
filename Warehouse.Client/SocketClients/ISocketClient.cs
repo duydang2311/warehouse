@@ -2,7 +2,9 @@ using System.Net.Sockets;
 
 namespace Warehouse.Client.SocketClients;
 
+using Warehouse.Shared.Sockets;
+
 public interface ISocketClient
 {
-    Socket? Connect(string hostname, int port);
+    Task<bool> Connect(string hostname, int port);
 }

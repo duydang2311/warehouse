@@ -1,45 +1,45 @@
 using System.Net;
 using System.Net.Sockets;
-using Warehouse.Shared.BinaryHelpers;
+using Warehouse.Shared.Services;
 
 namespace Warehouse.Client.SocketClients;
 
+using Warehouse.Shared.Sockets;
+
 public class SocketClient : ISocketClient
 {
-    private Socket? socket;
-    private readonly IBinaryHelper binaryHelper;
+    private ISocket? socket;
+    private readonly IServiceFactory<
+        AddressFamily,
+        SocketType,
+        ProtocolType,
+        ISocket
+    > socketFactory;
 
-    public SocketClient(IBinaryHelper binaryHelper)
+    public SocketClient(
+        IServiceFactory<AddressFamily, SocketType, ProtocolType, ISocket> socketFactory
+    )
     {
-        this.binaryHelper = binaryHelper;
+        this.socketFactory = socketFactory;
     }
 
-    public Socket? Connect(string hostname, int port)
+    public async Task<bool> Connect(string hostname, int port)
     {
         if (socket is not null)
         {
-            socket.Disconnect(true);
+            await socket.Disconnect(true);
         }
         var host = Dns.GetHostEntry(hostname);
         var ipAddress = host.AddressList[0];
         var remoteEP = new IPEndPoint(ipAddress, port);
-        try
+        if (socket is null)
         {
-            if (socket is null)
-            {
-                socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            }
-            socket.Connect(remoteEP);
-            Console.WriteLine($"Socket connected to {socket.RemoteEndPoint}");
-            return socket;
+            socket = socketFactory.GetService(
+                ipAddress.AddressFamily,
+                SocketType.Stream,
+                ProtocolType.Tcp
+            );
         }
-        catch
-        {
-#if DEBUG
-            throw;
-#else
-            return null;
-#endif
-        }
+        return await socket.Connect(remoteEP);
     }
 }
