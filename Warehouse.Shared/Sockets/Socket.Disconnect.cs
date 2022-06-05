@@ -1,21 +1,19 @@
-using System.Net;
-
 namespace Warehouse.Shared.Sockets;
 
 public partial class Socket : ISocket
 {
-    public Task<bool> Connect(EndPoint remoteEP)
+    public Task<bool> Disconnect(bool reuseSocket)
     {
         var taskCompletionSource = new TaskCompletionSource<bool>();
-        InternalSocket.BeginConnect(remoteEP, ConnectCallback, taskCompletionSource);
+        InternalSocket.BeginDisconnect(reuseSocket, DisconnectCallback, taskCompletionSource);
         return taskCompletionSource.Task;
     }
 
-    private void ConnectCallback(IAsyncResult ar)
+    private void DisconnectCallback(IAsyncResult ar)
     {
         try
         {
-            InternalSocket.EndConnect(ar);
+            InternalSocket.EndDisconnect(ar);
             ((TaskCompletionSource<bool>)ar.AsyncState!).SetResult(true);
         }
         catch

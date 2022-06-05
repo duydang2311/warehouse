@@ -8,6 +8,7 @@ public interface ISocket
 {
     System.Net.Sockets.Socket InternalSocket { get; }
     Task<bool> Connect(EndPoint remoteEP);
+    Task<bool> Disconnect(bool reuseSocket);
     Task<ISocketOperationResult> Send(IPacket packet);
     Task<ISocketOperationResult> Send(byte[] bytes);
     Task<ISocketOperationResult> Send(byte[] bytes, int offset, int size);
