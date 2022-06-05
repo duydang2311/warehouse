@@ -1,22 +1,30 @@
+using MessagePack;
 using System.Net;
 using System.Net.Sockets;
+using Warehouse.Shared.Packets;
 
 namespace Warehouse.Shared.Sockets;
 
 public partial class Socket : ISocket
 {
-    public Task<ISocketOperationResult> Send(byte[] bytes)
+    public Task<ISocketOperationResult> Send(IPacket packet)
     {
-        return Send(bytes, 0, bytes.Length, SocketFlags.None);
+        var buffer = MessagePackSerializer.Serialize<IPacket>(packet);
+        return Send(buffer, 0, buffer.Length, SocketFlags.None);
     }
 
-    public Task<ISocketOperationResult> Send(byte[] bytes, int offset, int size)
+    public Task<ISocketOperationResult> Send(byte[] buffer)
     {
-        return Send(bytes, offset, size, SocketFlags.None);
+        return Send(buffer, 0, buffer.Length, SocketFlags.None);
+    }
+
+    public Task<ISocketOperationResult> Send(byte[] buffer, int offset, int size)
+    {
+        return Send(buffer, offset, size, SocketFlags.None);
     }
 
     public Task<ISocketOperationResult> Send(
-        byte[] bytes,
+        byte[] buffer,
         int offset,
         int size,
         SocketFlags socketFlags
@@ -24,7 +32,7 @@ public partial class Socket : ISocket
     {
         var taskCompletionSource = new TaskCompletionSource<ISocketOperationResult>();
         InternalSocket.BeginSend(
-            bytes,
+            buffer,
             offset,
             size,
             socketFlags,
