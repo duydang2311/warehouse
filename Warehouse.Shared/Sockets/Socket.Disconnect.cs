@@ -5,7 +5,7 @@ public partial class Socket : ISocket
     public Task<bool> Disconnect(bool reuseSocket)
     {
         var taskCompletionSource = new TaskCompletionSource<bool>();
-        InternalSocket.BeginDisconnect(reuseSocket, DisconnectCallback, taskCompletionSource);
+        socket.BeginDisconnect(reuseSocket, DisconnectCallback, taskCompletionSource);
         return taskCompletionSource.Task;
     }
 
@@ -13,7 +13,7 @@ public partial class Socket : ISocket
     {
         try
         {
-            InternalSocket.EndDisconnect(ar);
+            socket.EndDisconnect(ar);
             ((TaskCompletionSource<bool>)ar.AsyncState!).SetResult(true);
         }
         catch

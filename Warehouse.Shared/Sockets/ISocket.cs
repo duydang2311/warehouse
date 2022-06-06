@@ -4,13 +4,14 @@ using Warehouse.Shared.Packets;
 
 namespace Warehouse.Shared.Sockets;
 
-public interface ISocket
+public partial interface ISocket : IDisposable
 {
-    System.Net.Sockets.Socket InternalSocket { get; }
     Task<bool> Connect(EndPoint remoteEP);
     Task<bool> Disconnect(bool reuseSocket);
+    Task<ISocket> Accept();
     Task<ISocketOperationResult> Send(IPacket packet);
     Task<ISocketOperationResult> Send(byte[] bytes);
     Task<ISocketOperationResult> Send(byte[] bytes, int offset, int size);
     Task<ISocketOperationResult> Send(byte[] bytes, int offset, int size, SocketFlags socketFlags);
+    void Bind(EndPoint localEP);
 }

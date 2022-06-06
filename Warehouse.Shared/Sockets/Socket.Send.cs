@@ -31,7 +31,7 @@ public partial class Socket : ISocket
     )
     {
         var taskCompletionSource = new TaskCompletionSource<ISocketOperationResult>();
-        InternalSocket.BeginSend(
+        socket.BeginSend(
             buffer,
             offset,
             size,
@@ -44,7 +44,7 @@ public partial class Socket : ISocket
 
     private void SendCallback(IAsyncResult ar)
     {
-        var bytes = InternalSocket.EndSend(ar, out var errorCode);
+        var bytes = socket.EndSend(ar, out var errorCode);
         ((TaskCompletionSource<ISocketOperationResult>)ar.AsyncState!).SetResult(
             new SocketOperationResult(bytes, errorCode)
         );
