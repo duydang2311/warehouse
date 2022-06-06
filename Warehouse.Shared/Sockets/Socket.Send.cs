@@ -7,6 +7,14 @@ namespace Warehouse.Shared.Sockets;
 
 public partial class Socket : ISocket
 {
+    private void SendCallback(IAsyncResult ar)
+    {
+        var bytes = socket.EndSend(ar, out var errorCode);
+        ((TaskCompletionSource<ISocketOperationResult>)ar.AsyncState!).SetResult(
+            new SocketOperationResult(bytes, errorCode)
+        );
+    }
+
     public Task<ISocketOperationResult> Send(IPacket packet)
     {
         var buffer = MessagePackSerializer.Serialize(packet);
@@ -42,11 +50,51 @@ public partial class Socket : ISocket
         return taskCompletionSource.Task;
     }
 
-    private void SendCallback(IAsyncResult ar)
+    public IAsyncResult BeginSend(
+        IPacket packet,
+        Action<IAsyncResult> callback,
+        SocketFlags socketFlags = SocketFlags.None,
+        object? state = null
+    )
     {
-        var bytes = socket.EndSend(ar, out var errorCode);
-        ((TaskCompletionSource<ISocketOperationResult>)ar.AsyncState!).SetResult(
-            new SocketOperationResult(bytes, errorCode)
+        var buffer = MessagePackSerializer.Serialize(packet);
+        return socket.BeginSend(
+            buffer,
+            0,
+            buffer.Length,
+            socketFlags,
+            new AsyncCallback(callback),
+            state
         );
+    }
+
+    public IAsyncResult BeginSend(
+        byte[] buffer,
+        Action<IAsyncResult> callback,
+        int offset = 0,
+        int? size = null,
+        SocketFlags socketFlags = SocketFlags.None,
+        object? state = null
+    )
+    {
+        size ??= buffer.Length;
+        return socket.BeginSend(
+            buffer,
+            offset,
+            (int)size,
+            socketFlags,
+            new AsyncCallback(callback),
+            state
+        );
+    }
+
+    public int EndSend(IAsyncResult asyncResult)
+    {
+        return socket.EndSend(asyncResult);
+    }
+
+    public int EndSend(IAsyncResult asyncResult, out SocketError socketError)
+    {
+        return socket.EndSend(asyncResult, out socketError);
     }
 }

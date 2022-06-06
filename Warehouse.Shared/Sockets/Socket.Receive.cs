@@ -7,6 +7,14 @@ namespace Warehouse.Shared.Sockets;
 
 public partial class Socket : ISocket
 {
+    private void ReceiveCallback(IAsyncResult ar)
+    {
+        var bytes = socket.EndReceive(ar, out var errorCode);
+        ((TaskCompletionSource<ISocketOperationResult>)ar.AsyncState!).SetResult(
+            new SocketOperationResult(bytes, errorCode)
+        );
+    }
+
     public Task<ISocketOperationResult> Receive(IPacket packet)
     {
         var buffer = MessagePackSerializer.Serialize(packet);
@@ -42,11 +50,51 @@ public partial class Socket : ISocket
         return taskCompletionSource.Task;
     }
 
-    private void ReceiveCallback(IAsyncResult ar)
+    public IAsyncResult BeginReceive(
+        IPacket packet,
+        Action<IAsyncResult> callback,
+        SocketFlags socketFlags = SocketFlags.None,
+        object? state = null
+    )
     {
-        var bytes = socket.EndReceive(ar, out var errorCode);
-        ((TaskCompletionSource<ISocketOperationResult>)ar.AsyncState!).SetResult(
-            new SocketOperationResult(bytes, errorCode)
+        var buffer = MessagePackSerializer.Serialize(packet);
+        return socket.BeginReceive(
+            buffer,
+            0,
+            buffer.Length,
+            socketFlags,
+            new AsyncCallback(callback),
+            state
         );
+    }
+
+    public IAsyncResult BeginReceive(
+        byte[] buffer,
+        Action<IAsyncResult> callback,
+        int offset = 0,
+        int? size = null,
+        SocketFlags socketFlags = SocketFlags.None,
+        object? state = null
+    )
+    {
+        size ??= buffer.Length;
+        return socket.BeginReceive(
+            buffer,
+            offset,
+            (int)size,
+            socketFlags,
+            new AsyncCallback(callback),
+            state
+        );
+    }
+
+    public int EndReceive(IAsyncResult asyncResult)
+    {
+        return socket.EndReceive(asyncResult);
+    }
+
+    public int EndReceive(IAsyncResult asyncResult, out SocketError socketError)
+    {
+        return socket.EndReceive(asyncResult, out socketError);
     }
 }
