@@ -9,7 +9,7 @@ public partial class Socket : ISocket
 {
     public Task<ISocketOperationResult> Send(IPacket packet)
     {
-        var buffer = MessagePackSerializer.Serialize<IPacket>(packet);
+        var buffer = MessagePackSerializer.Serialize(packet);
         return Send(buffer, 0, buffer.Length, SocketFlags.None);
     }
 
@@ -46,7 +46,7 @@ public partial class Socket : ISocket
     {
         var bytes = InternalSocket.EndSend(ar, out var errorCode);
         ((TaskCompletionSource<ISocketOperationResult>)ar.AsyncState!).SetResult(
-            new SocketOperationResult() { Bytes = 1, ErrorCode = SocketError.Success }
+            new SocketOperationResult(bytes, errorCode)
         );
     }
 }
