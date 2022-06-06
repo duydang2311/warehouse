@@ -68,4 +68,5 @@ public partial interface ISocket : IDisposable
     int EndReceive(IAsyncResult asyncResult, out SocketError socketError);
     void Bind(string hostname, int port);
     void Bind(EndPoint localEP);
+    void Shutdown(SocketShutdown how);
 }
