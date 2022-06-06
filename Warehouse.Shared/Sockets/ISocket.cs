@@ -8,6 +8,7 @@ public partial interface ISocket : IDisposable
 {
     bool Connected { get; }
     Task<bool> Connect(EndPoint remoteEP);
+    Task<bool> Connect(string hostname, int port);
     Task<bool> Disconnect(bool reuseSocket);
     Task<System.Net.Sockets.Socket> Accept();
     public IAsyncResult BeginAccept(Action<IAsyncResult> callback, object? state);

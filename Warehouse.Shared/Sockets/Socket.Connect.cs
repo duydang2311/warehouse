@@ -11,6 +11,16 @@ public partial class Socket : ISocket
         return taskCompletionSource.Task;
     }
 
+    public Task<bool> Connect(string hostname, int port)
+    {
+        var taskCompletionSource = new TaskCompletionSource<bool>();
+        var host = Dns.GetHostEntry(hostname);
+        var ipAddress = host.AddressList[0];
+        var remoteEP = new IPEndPoint(ipAddress, port);
+        socket.BeginConnect(remoteEP, ConnectCallback, taskCompletionSource);
+        return taskCompletionSource.Task;
+    }
+
     private void ConnectCallback(IAsyncResult ar)
     {
         try
