@@ -14,7 +14,7 @@ public class SocketFactory : ISocketFactory
     {
         return new Socket(
             new System.Net.Sockets.Socket(
-                AddressFamily.InterNetwork,
+                AddressFamily.InterNetworkV6,
                 SocketType.Stream,
                 ProtocolType.Tcp
             )
