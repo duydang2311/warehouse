@@ -1,14 +1,8 @@
-namespace Warehouse.Client.ClientSockets;
-
 using Warehouse.Shared.Sockets;
 
-public partial class ClientSocket : IClientSocket
-{
-    public ISocket? Socket { get; protected set; }
-    private readonly ISocketFactory socketFactory;
+namespace Warehouse.Client.ClientSockets;
 
-    public ClientSocket(ISocketFactory socketFactory)
-    {
-        this.socketFactory = socketFactory;
-    }
+public partial class ClientSocket : Socket, IClientSocket
+{
+    public ClientSocket(System.Net.Sockets.Socket socket) : base(socket) { }
 }
