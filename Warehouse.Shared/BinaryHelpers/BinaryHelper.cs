@@ -9,8 +9,30 @@ public class BinaryHelper : IBinaryHelper
         return MessagePackSerializer.Serialize<T>(model);
     }
 
-    public T Deserialize<T>(byte[] bytes) where T : class
+    public T Deserialize<T>(byte[] buffer) where T : class
     {
-        return MessagePackSerializer.Deserialize<T>(bytes);
+        return MessagePackSerializer.Deserialize<T>(buffer);
+    }
+
+    public T Deserialize<T>(ReadOnlyMemory<byte> buffer) where T : class
+    {
+        try
+        {
+            return MessagePackSerializer.Deserialize<T>(buffer);
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    public T Deserialize<T>(byte[] buffer, out int bytesRead) where T : class
+    {
+        return MessagePackSerializer.Deserialize<T>(buffer, out bytesRead);
+    }
+
+    public T Deserialize<T>(ReadOnlyMemory<byte> buffer, out int bytesRead) where T : class
+    {
+        return MessagePackSerializer.Deserialize<T>(buffer, out bytesRead);
     }
 }

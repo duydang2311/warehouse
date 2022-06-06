@@ -21,9 +21,12 @@ public partial class Socket : ISocket
     {
         if (!disposed)
         {
-            socket.Shutdown(SocketShutdown.Both);
-            socket.Close();
-            socket.Dispose();
+            if (disposing)
+            {
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
+                socket.Dispose();
+            }
             disposed = true;
         }
     }
