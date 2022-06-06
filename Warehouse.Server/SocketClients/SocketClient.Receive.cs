@@ -1,5 +1,7 @@
 using System.Net.Sockets;
 using System.Text;
+using Warehouse.Shared.BinaryHelpers;
+using Warehouse.Shared.Packets;
 
 namespace Warehouse.Server.SocketClients;
 
@@ -8,52 +10,53 @@ public partial class SocketClient : IDisposable
     private const int BufferSize = 8192;
     private int receiveOffset = 0;
     private byte[] receiveBuffer = null!;
-    private byte[] sendBuffer = null!;
 
-    private void InitCommunicateInternal()
+    public void BeginReceive()
     {
         receiveBuffer = new byte[BufferSize];
-        sendBuffer = new byte[BufferSize];
-        client.BeginReceive(
-            receiveBuffer,
-            receiveOffset,
-            BufferSize - receiveOffset,
-            SocketFlags.None,
-            new AsyncCallback(ReceiveCallback),
-            null
-        );
+        BeginReceive(receiveBuffer, ReceiveCallback);
     }
 
-    private void ReceiveCallback(IAsyncResult result)
+    private void ReceiveCallback(IAsyncResult asyncResult)
     {
-        if (!client.Connected)
+        if (!Connected)
         {
+            Console.WriteLine("Disconnected");
             Disconnect();
             return;
         }
-        var read = client.EndReceive(result);
-        if (read == 0)
+        var bytes = EndReceive(asyncResult);
+        if (bytes == 0)
         {
+            Console.WriteLine("Disconnected");
             Disconnect();
             return;
         }
-        if (read > 0)
+        int bytesRead = 0;
+        var buffer = new ReadOnlyMemory<byte>(receiveBuffer, 0, bytes);
+        do
         {
-            receiveOffset += read;
-        }
-        else
-        {
-            // TODO: buffer is fulfilled, do something
-            receiveOffset = 0;
-            Array.Clear(receiveBuffer);
-        }
-        client.BeginReceive(
-            receiveBuffer,
-            receiveOffset,
-            BufferSize - receiveOffset,
-            SocketFlags.None,
-            new AsyncCallback(ReceiveCallback),
-            null
-        );
+            try
+            {
+                var packet = new BinaryHelper().Deserialize<IPacket>(buffer, out bytesRead);
+                Console.Write($"Packet {packet.Identity} ({bytesRead} bytes read): ");
+                foreach (var i in packet.Buffer)
+                {
+                    Console.Write(i + " ");
+                }
+                buffer = buffer.Slice(bytesRead);
+                Console.WriteLine(buffer.Length);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw;
+#else
+                Console.WriteLine(ex);
+                break;
+#endif
+            }
+        } while (buffer.Length != 0);
+        BeginReceive(receiveBuffer, ReceiveCallback);
     }
 }

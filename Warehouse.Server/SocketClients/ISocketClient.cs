@@ -1,10 +1,8 @@
-using System.Net.Sockets;
+using Warehouse.Shared.Sockets;
 
 namespace Warehouse.Server.SocketClients;
 
-public interface ISocketClient : IDisposable
+public interface ISocketClient : ISocket
 {
-    Socket Client { get; }
-    event Action<ISocketClient>? DisconnectEvent;
-    void Disconnect();
+    void BeginReceive();
 }
