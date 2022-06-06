@@ -8,7 +8,7 @@ public partial interface ISocket : IDisposable
 {
     Task<bool> Connect(EndPoint remoteEP);
     Task<bool> Disconnect(bool reuseSocket);
-    Task<ISocket> Accept();
+    Task<System.Net.Sockets.Socket> Accept();
     Task<ISocketOperationResult> Send(IPacket packet);
     Task<ISocketOperationResult> Send(byte[] bytes);
     Task<ISocketOperationResult> Send(byte[] bytes, int offset, int size);
