@@ -8,4 +8,5 @@ using Warehouse.Shared.Sockets;
 public interface ISocketListener : ISocket
 {
     List<ISocketClient> Clients { get; }
+    void BeginAccept();
 }
