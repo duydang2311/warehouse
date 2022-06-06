@@ -1,9 +1,11 @@
+using System.Net;
 using Warehouse.Server.SocketClients;
 
 namespace Warehouse.Server.SocketListeners;
 
-public interface ISocketListener
+using Warehouse.Shared.Sockets;
+
+public interface ISocketListener : ISocket
 {
-    void Listen();
     List<ISocketClient> Clients { get; }
 }
