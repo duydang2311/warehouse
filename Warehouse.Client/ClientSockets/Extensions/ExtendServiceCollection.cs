@@ -6,7 +6,7 @@ public static class ExtendServiceCollection
 {
     public static IServiceCollection WithSocketClients(this IServiceCollection self)
     {
-        self.AddSingleton<IClientSocket, ClientSocket>();
+        self.AddTransient<IClientSocket, ClientSocket>();
         return self;
     }
 }
