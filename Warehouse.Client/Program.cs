@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using Warehouse.Client.ClientSockets;
-using Warehouse.Shared.BinaryHelpers;
+using Warehouse.Shared.Packets;
 
 namespace Warehouse.Client;
 
@@ -17,13 +14,15 @@ public class Program
         services.WithBinaryHelpers().WithSockets().WithSocketClients();
         Provider = services.BuildServiceProvider();
 
-        var client = Provider.GetRequiredService<IClientSocket>();
+        var factory = Provider.GetRequiredService<IClientSocketFactory>();
+        var client = factory.GetService();
         if (!await client.Connect("localhost", 4242))
         {
             Console.WriteLine("Connection failed");
             return;
         }
         Console.WriteLine("Connected successfully");
+        var result = await client.Send(new Packet(200, new byte[] { 12, 239, 32, 34, 192 }));
         Console.ReadKey();
     }
 }
