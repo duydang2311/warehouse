@@ -6,6 +6,6 @@ public partial class SocketListener : ISocketListener
 {
     private void SocketClient_DisconnectEvent(ISocketClient sender)
     {
-        Console.WriteLine($"{sender.Client.RemoteEndPoint} disconnected");
+        // Console.WriteLine($"{sender.Client.RemoteEndPoint} disconnected");
     }
 }
