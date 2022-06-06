@@ -1,9 +1,8 @@
 using System.Net.Sockets;
-using Warehouse.Shared.Services;
 
 namespace Warehouse.Shared.Sockets;
 
-public class SocketFactory : IServiceFactory<AddressFamily, SocketType, ProtocolType, ISocket>
+public class SocketFactory : ISocketFactory
 {
     public ISocket GetService(
         AddressFamily addressFamily,

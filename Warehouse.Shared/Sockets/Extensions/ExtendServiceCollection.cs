@@ -8,10 +8,7 @@ public static partial class ExtendServiceCollection
 {
     public static IServiceCollection WithSockets(this IServiceCollection self)
     {
-        self.AddSingleton<
-            IServiceFactory<AddressFamily, SocketType, ProtocolType, ISocket>,
-            SocketFactory
-        >();
+        self.AddSingleton<ISocketFactory, SocketFactory>();
         return self;
     }
 }
