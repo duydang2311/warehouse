@@ -6,6 +6,7 @@ namespace Warehouse.Shared.Sockets;
 
 public partial interface ISocket : IDisposable
 {
+    bool Connected { get; }
     Task<bool> Connect(EndPoint remoteEP);
     Task<bool> Disconnect(bool reuseSocket);
     Task<System.Net.Sockets.Socket> Accept();

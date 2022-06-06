@@ -16,7 +16,7 @@ public partial class Socket : ISocket
         return taskCompletionSource.Task;
     }
 
-    public IAsyncResult BeginAccept(Action<IAsyncResult> callback, object? state)
+    public IAsyncResult BeginAccept(Action<IAsyncResult> callback, object? state = null)
     {
         socket.Listen(0);
         return socket.BeginAccept(new AsyncCallback(callback), state);

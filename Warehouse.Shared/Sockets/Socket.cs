@@ -7,6 +7,11 @@ public partial class Socket : ISocket
     private bool disposed;
     private readonly System.Net.Sockets.Socket socket;
 
+    public bool Connected
+    {
+        get => socket.Connected;
+    }
+
     public Socket(System.Net.Sockets.Socket socket)
     {
         this.socket = socket;
