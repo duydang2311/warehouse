@@ -5,6 +5,7 @@ namespace Warehouse.Server.SocketClients;
 
 public partial class SocketClient : IDisposable
 {
+    public event Action<ISocketClient, IPacket>? Received;
     private const int BufferSize = 8192;
     private byte[] receiveBuffer = null!;
 
@@ -14,7 +15,7 @@ public partial class SocketClient : IDisposable
         BeginReceive(receiveBuffer, ReceiveCallback);
     }
 
-    private void ReceiveCallback(IAsyncResult asyncResult)
+    private async void ReceiveCallback(IAsyncResult asyncResult)
     {
         if (!Connected)
         {
@@ -27,33 +28,23 @@ public partial class SocketClient : IDisposable
             Disconnect();
             return;
         }
-        int bytesRead = 0;
-        var buffer = new ReadOnlyMemory<byte>(receiveBuffer, 0, bytes);
+        int offset = 0;
+        long position = 0;
         do
         {
-            try
+            using var stream = new MemoryStream(receiveBuffer, offset, bytes - offset);
+            var packet = await serializer.TryDeserializeAsync(stream);
+            if (packet is null)
             {
-                var packet = new BinaryHelper().Deserialize<IPacket>(buffer, out bytesRead);
-                Console.Write($"Packet {packet.Identity} ({bytesRead} bytes read): ");
-                foreach (var i in packet.Buffer)
-                {
-                    Console.Write(i + " ");
-                }
-                buffer = buffer.Slice(bytesRead);
-                Console.WriteLine(buffer.Length);
-            }
-#pragma warning disable 0168
-            catch (Exception ex)
-#pragma warning restore 0168
-            {
-#if DEBUG
-                throw;
-#else
-                Console.WriteLine(ex);
+                Console.WriteLine("Bad packet");
                 break;
-#endif
             }
-        } while (buffer.Length != 0);
+            if (Received is not null)
+            {
+                Received(this, packet);
+            }
+            position = stream.Position;
+        } while (offset + position < bytes);
         BeginReceive(receiveBuffer, ReceiveCallback);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Server.SocketListeners;
 using Warehouse.Server.SocketClients;
+using Warehouse.Shared.Packets;
 
 namespace Warehouse.Server;
 
@@ -11,7 +12,12 @@ public class Program
     public static void Main()
     {
         var services = new ServiceCollection();
-        services.WithBinaryHelpers().WithSocketListeners().WithSocketClients();
+        services
+            .WithBinaryHelpers()
+            .WithSocketListeners()
+            .WithSocketClients()
+            .WithSockets()
+            .WithPackets();
         Provider = services.BuildServiceProvider();
         services.AddSingleton<IServiceProvider, ServiceProvider>(p => Provider);
 
@@ -26,11 +32,19 @@ public class Program
     {
         client.BeginReceive();
         client.Disconnecting += Client_Disconnecting;
+        client.Received += Client_Received;
         Console.WriteLine($"{client.RemoteEndPoint} connected");
     }
 
     public static void Client_Disconnecting(ISocketClient client)
     {
         Console.WriteLine($"{client.RemoteEndPoint} disconnected");
+    }
+
+    public static void Client_Received(ISocketClient client, IPacket packet)
+    {
+        Console.Write(
+            $"Packet {packet.Identity} has {packet.Buffer.Length} bytes: {string.Join(' ', packet.Buffer)}"
+        );
     }
 }
