@@ -67,4 +67,16 @@ public class PacketDataSerializer : IPacketDataSerializer
             return default(T?);
         }
     }
+
+    public async Task<IPacket?> TryDeserializeAsync(Stream stream)
+    {
+        try
+        {
+            return await MessagePackSerializer.DeserializeAsync<IPacket>(stream);
+        }
+        catch
+        {
+            return default(IPacket?);
+        }
+    }
 }
