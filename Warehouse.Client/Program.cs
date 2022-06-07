@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Client.ClientSockets;
 using Warehouse.Shared.NetHelpers;
+using Warehouse.Shared.Packets;
 
 namespace Warehouse.Client;
 
@@ -23,6 +24,15 @@ public class Program
             return;
         }
         Console.WriteLine($"Connected to {client.RemoteEndPoint}");
+        client.Received += Received;
+        client.BeginReceive();
         Console.ReadKey();
+    }
+
+    private static void Received(IClientSocket sender, IPacket packet)
+    {
+        Console.Write(
+            $"Packet {packet.Identity} has {packet.Buffer.Length} bytes: {string.Join(' ', packet.Buffer)}"
+        );
     }
 }
