@@ -1,4 +1,4 @@
-name: Test .NET
+name: unit test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -20,4 +20,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Test
-      run: dotnet test --no-restore
+      run: dotnet test --no-restore Warehouse.UnitTests
