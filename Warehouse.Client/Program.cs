@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Client.ClientSockets;
 using Warehouse.Shared.Packets;
+using Warehouse.Shared.Packets.Serializers;
 
 namespace Warehouse.Client;
 
@@ -11,7 +12,7 @@ public class Program
     public static async Task Main()
     {
         var services = new ServiceCollection();
-        services.WithBinaryHelpers().WithSockets().WithSocketClients();
+        services.WithBinaryHelpers().WithSockets().WithSocketClients().WithPackets();
         Provider = services.BuildServiceProvider();
 
         var factory = Provider.GetRequiredService<IClientSocketFactory>();
@@ -22,7 +23,6 @@ public class Program
             return;
         }
         Console.WriteLine("Connected successfully");
-        var result = await client.Send(new Packet(200));
         Console.ReadKey();
     }
 }
