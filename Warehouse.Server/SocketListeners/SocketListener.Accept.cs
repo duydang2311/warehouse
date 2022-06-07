@@ -5,6 +5,8 @@ namespace Warehouse.Server.SocketListeners;
 
 public partial class SocketListener : Socket, ISocketListener
 {
+    public event Action<ISocketClient>? Accepted;
+
     public void BeginAccept()
     {
         BeginAccept(AcceptCallback);
@@ -14,9 +16,11 @@ public partial class SocketListener : Socket, ISocketListener
     {
         var handler = EndAccept(ar);
         var client = socketClientFactory.GetService(handler);
-        client.BeginReceive();
         Clients.Add(client);
-        Console.WriteLine($"New connection accepted");
         BeginAccept(AcceptCallback);
+        if (Accepted is not null)
+        {
+            Accepted(client);
+        }
     }
 }

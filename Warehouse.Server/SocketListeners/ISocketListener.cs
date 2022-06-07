@@ -9,4 +9,5 @@ public interface ISocketListener : ISocket
 {
     List<ISocketClient> Clients { get; }
     void BeginAccept();
+    event Action<ISocketClient>? Accepted;
 }
