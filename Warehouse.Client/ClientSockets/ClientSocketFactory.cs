@@ -1,13 +1,20 @@
 using System.Net.Sockets;
-using Warehouse.Shared.Services;
-using Warehouse.Shared.Sockets;
+using Warehouse.Shared.Packets.Serializers;
 
 namespace Warehouse.Client.ClientSockets;
 
 public class ClientSocketFactory : IClientSocketFactory
 {
+    private readonly IPacketDataSerializer serializer;
+
+    public ClientSocketFactory(IPacketDataSerializer serializer)
+    {
+        this.serializer = serializer;
+    }
+
     public IClientSocket GetService() =>
         new ClientSocket(
+            serializer,
             new System.Net.Sockets.Socket(
                 AddressFamily.InterNetworkV6,
                 SocketType.Stream,
@@ -15,5 +22,6 @@ public class ClientSocketFactory : IClientSocketFactory
             )
         );
 
-    public IClientSocket GetService(System.Net.Sockets.Socket socket) => new ClientSocket(socket);
+    public IClientSocket GetService(System.Net.Sockets.Socket socket) =>
+        new ClientSocket(serializer, socket);
 }
