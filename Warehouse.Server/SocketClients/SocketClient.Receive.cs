@@ -1,5 +1,3 @@
-using System.Net.Sockets;
-using System.Text;
 using Warehouse.Shared.BinaryHelpers;
 using Warehouse.Shared.Packets;
 
@@ -8,7 +6,6 @@ namespace Warehouse.Server.SocketClients;
 public partial class SocketClient : IDisposable
 {
     private const int BufferSize = 8192;
-    private int receiveOffset = 0;
     private byte[] receiveBuffer = null!;
 
     public void BeginReceive()
@@ -47,7 +44,9 @@ public partial class SocketClient : IDisposable
                 buffer = buffer.Slice(bytesRead);
                 Console.WriteLine(buffer.Length);
             }
+#pragma warning disable 0168
             catch (Exception ex)
+#pragma warning restore 0168
             {
 #if DEBUG
                 throw;
