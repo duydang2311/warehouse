@@ -18,6 +18,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: |
+        dotnet restore Warehouse.UnitTests
+        dotnet restore Warehouse.Shared
     - name: Test
       run: dotnet test --no-restore Warehouse.UnitTests
