@@ -25,6 +25,7 @@ public class Program
         }
         Console.WriteLine($"Connected to {client.RemoteEndPoint}");
         client.Received += Received;
+        client.RemoteDisconnecting += RemoteDisconnecting;
         client.BeginReceive();
         Console.ReadKey();
     }
@@ -34,5 +35,12 @@ public class Program
         Console.Write(
             $"Packet {packet.Identity} has {packet.Buffer.Length} bytes: {string.Join(' ', packet.Buffer)}"
         );
+    }
+
+    private static void RemoteDisconnecting(IClientSocket sender)
+    {
+        sender.Disconnect(false);
+        sender.Dispose();
+        Console.Write($"Server has disconnected. Current socket is disposed.");
     }
 }

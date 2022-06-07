@@ -7,4 +7,5 @@ public interface IClientSocket : ISocket
 {
     void BeginReceive();
     event Action<IClientSocket, IPacket>? Received;
+    event Action<IClientSocket>? RemoteDisconnecting;
 }

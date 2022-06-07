@@ -19,13 +19,13 @@ public partial class ClientSocket
     {
         if (!Connected)
         {
-            // TODO: Disconnecting event
+            RemoteDisconnect();
             return;
         }
         var bytes = EndReceive(asyncResult);
         if (bytes == 0)
         {
-            // TODO: Disconnecting event
+            RemoteDisconnect();
             return;
         }
         int offset = 0;
