@@ -16,11 +16,17 @@ public partial class SocketListener : Socket, ISocketListener
     {
         var handler = EndAccept(ar);
         var client = socketClientFactory.GetService(handler);
+        client.Disconnecting += Client_Disconnecting;
         Clients.Add(client);
         BeginAccept(AcceptCallback);
         if (Accepted is not null)
         {
             Accepted(client);
         }
+    }
+
+    private void Client_Disconnecting(ISocketClient client)
+    {
+        Clients.Remove(client);
     }
 }
