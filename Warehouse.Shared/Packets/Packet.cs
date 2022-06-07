@@ -5,16 +5,13 @@ namespace Warehouse.Shared.Packets;
 [MessagePackObject(keyAsPropertyName: true)]
 public class Packet : IPacket
 {
-    public ulong Identity { get; init; }
+    public ulong Identity { get; protected set; }
 
-    [IgnoreMember]
-    public byte[] Buffer
-    {
-        get => MessagePackSerializer.Serialize<IPacket>(this);
-    }
+    public byte[] Buffer { get; protected set; }
 
-    public Packet(ulong identity)
+    public Packet(ulong identity, byte[] buffer)
     {
         Identity = identity;
+        Buffer = buffer;
     }
 }

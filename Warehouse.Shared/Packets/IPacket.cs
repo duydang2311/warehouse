@@ -7,6 +7,5 @@ public interface IPacket
 {
     ulong Identity { get; }
 
-    [IgnoreMember]
     byte[] Buffer { get; }
 }
