@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Sockets;
 
 namespace Warehouse.Shared.Sockets;
@@ -10,6 +11,14 @@ public partial class Socket : ISocket
     public bool Connected
     {
         get => socket.Connected;
+    }
+    public EndPoint? LocalEndPoint
+    {
+        get => socket.LocalEndPoint;
+    }
+    public EndPoint? RemoteEndPoint
+    {
+        get => socket.RemoteEndPoint;
     }
 
     public Socket(System.Net.Sockets.Socket socket)

@@ -7,6 +7,8 @@ namespace Warehouse.Shared.Sockets;
 public partial interface ISocket : IDisposable
 {
     bool Connected { get; }
+    EndPoint? LocalEndPoint { get; }
+    EndPoint? RemoteEndPoint { get; }
     Task<bool> Connect(EndPoint remoteEP);
     Task<bool> Connect(string hostname, int port);
     Task<bool> Disconnect(bool reuseSocket);
