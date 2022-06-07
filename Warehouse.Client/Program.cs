@@ -22,7 +22,7 @@ public class Program
             return;
         }
         Console.WriteLine("Connected successfully");
-        var result = await client.Send(new Packet(200, new byte[] { 12, 239, 32, 34, 192 }));
+        var result = await client.Send(new Packet(200));
         Console.ReadKey();
     }
 }

@@ -6,5 +6,7 @@ namespace Warehouse.Shared.Packets;
 public interface IPacket
 {
     ulong Identity { get; }
+
+    [IgnoreMember]
     byte[] Buffer { get; }
 }
