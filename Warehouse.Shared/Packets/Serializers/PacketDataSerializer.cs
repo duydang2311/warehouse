@@ -22,8 +22,21 @@ public class PacketDataSerializer : IPacketDataSerializer
         );
     }
 
+    public async Task<IPacket?> TrySerializeAsync<T>(T packetData) where T : IPacketData
+    {
+        using var stream = new MemoryStream();
+        await MessagePackSerializer.SerializeAsync<T>(stream, packetData);
+        return packetFactory.GetService(identifier.TryIdentify<T>(), stream.ToArray());
+    }
+
     public T? TryDeserialize<T>(IPacket packet) where T : IPacketData
     {
         return MessagePackSerializer.Deserialize<T>(packet.Buffer);
+    }
+
+    public async Task<T?> TryDeserializeAsync<T>(IPacket packet) where T : IPacketData
+    {
+        using var stream = new MemoryStream(packet.Buffer);
+        return await MessagePackSerializer.DeserializeAsync<T>(stream);
     }
 }
