@@ -18,6 +18,19 @@ public class Program
         var listener = Provider.GetRequiredService<ISocketListenerFactory>().GetService();
         listener.Bind("localhost", 4242);
         listener.BeginAccept();
+        listener.Accepted += Listener_Accepted;
         Console.ReadKey();
+    }
+
+    public static void Listener_Accepted(ISocketClient client)
+    {
+        client.BeginReceive();
+        client.Disconnecting += Client_Disconnecting;
+        Console.WriteLine($"{client.RemoteEndPoint} connected");
+    }
+
+    public static void Client_Disconnecting(ISocketClient client)
+    {
+        Console.WriteLine($"{client.RemoteEndPoint} disconnected");
     }
 }

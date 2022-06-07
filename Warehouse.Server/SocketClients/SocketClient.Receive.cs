@@ -18,14 +18,12 @@ public partial class SocketClient : IDisposable
     {
         if (!Connected)
         {
-            Console.WriteLine("Disconnected");
             Disconnect();
             return;
         }
         var bytes = EndReceive(asyncResult);
         if (bytes == 0)
         {
-            Console.WriteLine("Disconnected");
             Disconnect();
             return;
         }

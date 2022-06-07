@@ -2,13 +2,13 @@ namespace Warehouse.Server.SocketClients;
 
 public partial class SocketClient : IDisposable
 {
-    public event Action<ISocketClient>? DisconnectEvent;
+    public event Action<ISocketClient>? Disconnecting;
 
     public void Disconnect()
     {
-        if (DisconnectEvent is not null)
+        if (Disconnecting is not null)
         {
-            DisconnectEvent(this);
+            Disconnecting(this);
         }
         Dispose();
     }
