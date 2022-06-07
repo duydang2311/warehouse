@@ -10,6 +10,5 @@ public partial class SocketClient : IDisposable
         {
             Disconnecting(this);
         }
-        Dispose();
     }
 }

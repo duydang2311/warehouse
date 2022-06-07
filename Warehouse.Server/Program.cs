@@ -38,7 +38,8 @@ public class Program
 
     public static void Client_Disconnecting(ISocketClient client)
     {
-        Console.WriteLine($"{client.RemoteEndPoint} disconnected");
+        Console.WriteLine($"{client.RemoteEndPoint} disconnected. Disposing its handler");
+        client.Dispose();
     }
 
     public static void Client_Received(ISocketClient client, IPacket packet)
