@@ -18,6 +18,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: |
+        dotnet restore Warehouse.Client
+        dotnet restore Warehouse.Shared
     - name: Build client
       run: dotnet build --no-restore Warehouse.Client
