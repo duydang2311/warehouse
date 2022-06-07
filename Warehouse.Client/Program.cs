@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Client.ClientSockets;
-using Warehouse.Shared.Packets;
-using Warehouse.Shared.Packets.Serializers;
+using Warehouse.Shared.NetHelpers;
 
 namespace Warehouse.Client;
 
@@ -17,12 +16,13 @@ public class Program
 
         var factory = Provider.GetRequiredService<IClientSocketFactory>();
         var client = factory.GetService();
-        if (!await client.Connect("localhost", 4242))
+        var endpoint = NetHelper.MakeEndPointWith("localhost", 4242);
+        if (!await client.Connect(endpoint))
         {
-            Console.WriteLine("Connection failed");
+            Console.WriteLine($"Could not connect to {endpoint}");
             return;
         }
-        Console.WriteLine("Connected successfully");
+        Console.WriteLine($"Connected to {client.RemoteEndPoint}");
         Console.ReadKey();
     }
 }
