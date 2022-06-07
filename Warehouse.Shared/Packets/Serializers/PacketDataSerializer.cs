@@ -16,27 +16,55 @@ public class PacketDataSerializer : IPacketDataSerializer
 
     public IPacket? TrySerialize<T>(T packetData) where T : IPacketData
     {
-        return packetFactory.GetService(
-            identifier.TryIdentify<T>(),
-            MessagePackSerializer.Serialize<T>(packetData)
-        );
+        try
+        {
+            return packetFactory.GetService(
+                identifier.TryIdentify<T>(),
+                MessagePackSerializer.Serialize<T>(packetData)
+            );
+        }
+        catch
+        {
+            return default(IPacket?);
+        }
     }
 
     public async Task<IPacket?> TrySerializeAsync<T>(T packetData) where T : IPacketData
     {
-        using var stream = new MemoryStream();
-        await MessagePackSerializer.SerializeAsync<T>(stream, packetData);
-        return packetFactory.GetService(identifier.TryIdentify<T>(), stream.ToArray());
+        try
+        {
+            using var stream = new MemoryStream();
+            await MessagePackSerializer.SerializeAsync<T>(stream, packetData);
+            return packetFactory.GetService(identifier.TryIdentify<T>(), stream.ToArray());
+        }
+        catch
+        {
+            return default(IPacket?);
+        }
     }
 
     public T? TryDeserialize<T>(IPacket packet) where T : IPacketData
     {
-        return MessagePackSerializer.Deserialize<T>(packet.Buffer);
+        try
+        {
+            return MessagePackSerializer.Deserialize<T>(packet.Buffer);
+        }
+        catch
+        {
+            return default(T?);
+        }
     }
 
     public async Task<T?> TryDeserializeAsync<T>(IPacket packet) where T : IPacketData
     {
-        using var stream = new MemoryStream(packet.Buffer);
-        return await MessagePackSerializer.DeserializeAsync<T>(stream);
+        try
+        {
+            using var stream = new MemoryStream(packet.Buffer);
+            return await MessagePackSerializer.DeserializeAsync<T>(stream);
+        }
+        catch
+        {
+            return default(T?);
+        }
     }
 }
