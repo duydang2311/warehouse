@@ -2,24 +2,24 @@ using System.Reflection;
 
 namespace Warehouse.Shared.Packets.Identifiers;
 
-public class PacketDataIdentifier : IPacketDataIdentifier
+public class PacketIdentifier : IPacketIdentifier
 {
     private readonly Dictionary<Type, ulong> identityDict = new();
 
-    public PacketDataIdentifier()
+    public PacketIdentifier()
     {
         var start = new Random().NextInt64() + 1;
-        identityDict.Add(typeof(IPacketData), (ulong)start++);
+        identityDict.Add(typeof(IPacket), (ulong)start++);
         foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
         {
-            if (type.IsInterface && type.GetInterface(typeof(IPacketData).FullName!) is not null)
+            if (type.IsInterface && type.GetInterface(typeof(IPacket).FullName!) is not null)
             {
                 identityDict.Add(type, (ulong)start++);
             }
         }
     }
 
-    public ulong TryIdentify<T>() where T : IPacketData
+    public ulong TryIdentify<T>() where T : IPacket
     {
         if (identityDict.TryGetValue(typeof(T), out var value))
         {
@@ -40,7 +40,7 @@ public class PacketDataIdentifier : IPacketDataIdentifier
         return null;
     }
 
-    public bool Is<T>(IPacketHeader packet) where T : IPacketData
+    public bool Is<T>(IPacketHeader packet) where T : IPacket
     {
         return packet.Identity != 0 && packet.Identity == TryIdentify<T>();
     }

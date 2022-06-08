@@ -3,11 +3,11 @@ using MessagePack;
 namespace Warehouse.Shared.Packets;
 
 [MessagePackObject(true)]
-public class ClientPacketData : PacketData, IClientPacketData
+public class ClientPacket : Packet, IClientPacket
 {
     public ClientPacketType Type { get; protected set; }
 
-    public ClientPacketData(ClientPacketType type)
+    public ClientPacket(ClientPacketType type)
     {
         Type = type;
     }

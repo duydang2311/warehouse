@@ -4,24 +4,24 @@ using Warehouse.Shared.Packets.Serializers;
 
 namespace Warehouse.UnitTests.Packets;
 
-public class TestPacketDataSerializer
+public class TestPacketSerializer
 {
-    private readonly IPacketDataIdentifier identifier;
-    private readonly IPacketDataSerializer serializer;
+    private readonly IPacketIdentifier identifier;
+    private readonly IPacketSerializer serializer;
 
-    public TestPacketDataSerializer()
+    public TestPacketSerializer()
     {
-        identifier = new PacketDataIdentifier();
-        serializer = new PacketDataSerializer(identifier, new PacketHeaderFactory());
+        identifier = new PacketIdentifier();
+        serializer = new PacketSerializer(identifier, new PacketHeaderFactory());
     }
 
     [Fact]
     public void Serialize_Deserialize_Should_Equal()
     {
-        var data = new ClientPacketData(ClientPacketType.Select);
-        var packet = serializer.TrySerialize<IClientPacketData>(data);
+        var data = new ClientPacket(ClientPacketType.Select);
+        var packet = serializer.TrySerialize<IClientPacket>(data);
         Assert.NotNull(packet);
-        var deserialized = serializer.TryDeserialize<IClientPacketData>(packet!);
+        var deserialized = serializer.TryDeserialize<IClientPacket>(packet!);
         Assert.NotNull(deserialized);
         Assert.Equal(data.Type, deserialized!.Type);
     }

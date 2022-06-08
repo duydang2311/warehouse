@@ -3,27 +3,24 @@ using Warehouse.Shared.Packets.Identifiers;
 
 namespace Warehouse.Shared.Packets.Serializers;
 
-public class PacketDataSerializer : IPacketDataSerializer
+public class PacketSerializer : IPacketSerializer
 {
-    private readonly IPacketDataIdentifier identifier;
+    private readonly IPacketIdentifier identifier;
     private readonly IPacketHeaderFactory PacketHeaderFactory;
 
-    public PacketDataSerializer(
-        IPacketDataIdentifier identifier,
-        IPacketHeaderFactory PacketHeaderFactory
-    )
+    public PacketSerializer(IPacketIdentifier identifier, IPacketHeaderFactory PacketHeaderFactory)
     {
         this.identifier = identifier;
         this.PacketHeaderFactory = PacketHeaderFactory;
     }
 
-    public IPacketHeader? TrySerialize<T>(T packetData) where T : IPacketData
+    public IPacketHeader? TrySerialize<T>(T Packet) where T : IPacket
     {
         try
         {
             return PacketHeaderFactory.GetService(
                 identifier.TryIdentify<T>(),
-                MessagePackSerializer.Serialize<T>(packetData)
+                MessagePackSerializer.Serialize<T>(Packet)
             );
         }
         catch
@@ -32,12 +29,12 @@ public class PacketDataSerializer : IPacketDataSerializer
         }
     }
 
-    public async Task<IPacketHeader?> TrySerializeAsync<T>(T packetData) where T : IPacketData
+    public async Task<IPacketHeader?> TrySerializeAsync<T>(T Packet) where T : IPacket
     {
         try
         {
             using var stream = new MemoryStream();
-            await MessagePackSerializer.SerializeAsync<T>(stream, packetData);
+            await MessagePackSerializer.SerializeAsync<T>(stream, Packet);
             return PacketHeaderFactory.GetService(identifier.TryIdentify<T>(), stream.ToArray());
         }
         catch
@@ -46,7 +43,7 @@ public class PacketDataSerializer : IPacketDataSerializer
         }
     }
 
-    public T? TryDeserialize<T>(IPacketHeader packet) where T : IPacketData
+    public T? TryDeserialize<T>(IPacketHeader packet) where T : IPacket
     {
         try
         {
@@ -58,7 +55,7 @@ public class PacketDataSerializer : IPacketDataSerializer
         }
     }
 
-    public async Task<T?> TryDeserializeAsync<T>(IPacketHeader packet) where T : IPacketData
+    public async Task<T?> TryDeserializeAsync<T>(IPacketHeader packet) where T : IPacket
     {
         try
         {

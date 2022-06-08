@@ -4,32 +4,32 @@ using Warehouse.Shared.Packets.Serializers;
 
 namespace Warehouse.UnitTests.Packets;
 
-public class TestPacketDataIdentifier
+public class TestPacketIdentifier
 {
-    private readonly IPacketDataIdentifier identifier;
-    private readonly IPacketDataSerializer serializer;
+    private readonly IPacketIdentifier identifier;
+    private readonly IPacketSerializer serializer;
 
-    public TestPacketDataIdentifier()
+    public TestPacketIdentifier()
     {
-        identifier = new PacketDataIdentifier();
-        serializer = new PacketDataSerializer(identifier, new PacketHeaderFactory());
+        identifier = new PacketIdentifier();
+        serializer = new PacketSerializer(identifier, new PacketHeaderFactory());
     }
 
     [Fact]
     public void Identity_Not_Equal_0()
     {
-        var data = new ClientPacketData(ClientPacketType.Select);
-        var packet = serializer.TrySerialize<IClientPacketData>(data);
+        var data = new ClientPacket(ClientPacketType.Select);
+        var packet = serializer.TrySerialize<IClientPacket>(data);
         Assert.NotNull(packet);
-        Assert.NotEqual((ulong)0, identifier.TryIdentify<IClientPacketData>());
+        Assert.NotEqual((ulong)0, identifier.TryIdentify<IClientPacket>());
     }
 
     [Fact]
     public void Serialized_Identity_Must_Equal()
     {
-        var data = new ClientPacketData(ClientPacketType.Select);
-        var packet = serializer.TrySerialize<IClientPacketData>(data);
+        var data = new ClientPacket(ClientPacketType.Select);
+        var packet = serializer.TrySerialize<IClientPacket>(data);
         Assert.NotNull(packet);
-        Assert.Equal(packet!.Identity, identifier.TryIdentify<IClientPacketData>());
+        Assert.Equal(packet!.Identity, identifier.TryIdentify<IClientPacket>());
     }
 }

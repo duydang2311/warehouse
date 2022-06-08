@@ -9,8 +9,8 @@ public static partial class ExtendServiceCollection
     public static IServiceCollection WithPackets(this IServiceCollection self)
     {
         self.AddSingleton<IPacketHeaderFactory, PacketHeaderFactory>()
-            .AddSingleton<IPacketDataIdentifier, PacketDataIdentifier>()
-            .AddSingleton<IPacketDataSerializer, PacketDataSerializer>();
+            .AddSingleton<IPacketIdentifier, PacketIdentifier>()
+            .AddSingleton<IPacketSerializer, PacketSerializer>();
         return self;
     }
 }

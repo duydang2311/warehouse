@@ -5,9 +5,9 @@ namespace Warehouse.Client.ClientSockets;
 
 public class ClientSocketFactory : IClientSocketFactory
 {
-    private readonly IPacketDataSerializer serializer;
+    private readonly IPacketSerializer serializer;
 
-    public ClientSocketFactory(IPacketDataSerializer serializer)
+    public ClientSocketFactory(IPacketSerializer serializer)
     {
         this.serializer = serializer;
     }
