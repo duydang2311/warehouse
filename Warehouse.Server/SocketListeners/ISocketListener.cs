@@ -1,5 +1,5 @@
 using System.Net;
-using Warehouse.Server.SocketClients;
+using Warehouse.Server.SocketHandlers;
 
 namespace Warehouse.Server.SocketListeners;
 
@@ -7,7 +7,7 @@ using Warehouse.Shared.Sockets;
 
 public interface ISocketListener : ISocket
 {
-    List<ISocketClient> Clients { get; }
+    List<ISocketHandler> Clients { get; }
     void BeginAccept();
-    event Action<ISocketClient>? Accepted;
+    event Action<ISocketHandler>? Accepted;
 }

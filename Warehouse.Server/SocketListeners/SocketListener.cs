@@ -1,4 +1,4 @@
-using Warehouse.Server.SocketClients;
+using Warehouse.Server.SocketHandlers;
 
 namespace Warehouse.Server.SocketListeners;
 
@@ -6,14 +6,14 @@ using Warehouse.Shared.Sockets;
 
 public partial class SocketListener : Socket, ISocketListener
 {
-    private readonly ISocketClientFactory socketClientFactory;
-    public List<ISocketClient> Clients { get; } = new List<ISocketClient>();
+    private readonly ISocketHandlerFactory SocketHandlerFactory;
+    public List<ISocketHandler> Clients { get; } = new List<ISocketHandler>();
 
     public SocketListener(
-        ISocketClientFactory socketClientFactory,
+        ISocketHandlerFactory SocketHandlerFactory,
         System.Net.Sockets.Socket socket
     ) : base(socket)
     {
-        this.socketClientFactory = socketClientFactory;
+        this.SocketHandlerFactory = SocketHandlerFactory;
     }
 }

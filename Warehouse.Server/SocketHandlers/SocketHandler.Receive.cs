@@ -1,11 +1,11 @@
 using Warehouse.Shared.BinaryHelpers;
 using Warehouse.Shared.Packets;
 
-namespace Warehouse.Server.SocketClients;
+namespace Warehouse.Server.SocketHandlers;
 
-public partial class SocketClient : IDisposable
+public partial class SocketHandler : IDisposable
 {
-    public event Action<ISocketClient, IPacketHeader>? Received;
+    public event Action<ISocketHandler, IPacketHeader>? Received;
     private const int BufferSize = 8192;
     private byte[] receiveBuffer = null!;
 

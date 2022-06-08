@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Server.SocketListeners;
-using Warehouse.Server.SocketClients;
+using Warehouse.Server.SocketHandlers;
 using Warehouse.Shared.Packets;
 
 namespace Warehouse.Server;
@@ -15,7 +15,7 @@ public class Program
         services
             .WithBinaryHelpers()
             .WithSocketListeners()
-            .WithSocketClients()
+            .WithSocketHandlers()
             .WithSockets()
             .WithPackets();
         Provider = services.BuildServiceProvider();
@@ -28,7 +28,7 @@ public class Program
         Console.ReadKey();
     }
 
-    public static void Listener_Accepted(ISocketClient client)
+    public static void Listener_Accepted(ISocketHandler client)
     {
         client.BeginReceive();
         client.Disconnecting += Client_Disconnecting;
@@ -36,13 +36,13 @@ public class Program
         Console.WriteLine($"{client.RemoteEndPoint} connected");
     }
 
-    public static void Client_Disconnecting(ISocketClient client)
+    public static void Client_Disconnecting(ISocketHandler client)
     {
-        Console.WriteLine($"{client.RemoteEndPoint} disconnected. Disposing its handler");
+        Console.WriteLine($"Disposing handler {client.RemoteEndPoint} due to disconnected");
         client.Dispose();
     }
 
-    public static void Client_Received(ISocketClient client, IPacketHeader packet)
+    public static void Client_Received(ISocketHandler client, IPacketHeader packet)
     {
         Console.Write(
             $"Packet {packet.Identity} has {packet.Buffer.Length} bytes: {string.Join(' ', packet.Buffer)}"

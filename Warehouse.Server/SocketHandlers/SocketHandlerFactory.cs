@@ -1,22 +1,22 @@
 using System.Net.Sockets;
 using Warehouse.Shared.Packets.Serializers;
 
-namespace Warehouse.Server.SocketClients;
+namespace Warehouse.Server.SocketHandlers;
 
-public class SocketClientFactory : ISocketClientFactory
+public class SocketHandlerFactory : ISocketHandlerFactory
 {
     private readonly IPacketSerializer serializer;
 
-    public SocketClientFactory(IPacketSerializer serializer)
+    public SocketHandlerFactory(IPacketSerializer serializer)
     {
         this.serializer = serializer;
     }
 
-    public ISocketClient GetService(System.Net.Sockets.Socket socket) =>
-        new SocketClient(serializer, socket);
+    public ISocketHandler GetService(System.Net.Sockets.Socket socket) =>
+        new SocketHandler(serializer, socket);
 
-    public ISocketClient GetService() =>
-        new SocketClient(
+    public ISocketHandler GetService() =>
+        new SocketHandler(
             serializer,
             new System.Net.Sockets.Socket(
                 AddressFamily.InterNetworkV6,
