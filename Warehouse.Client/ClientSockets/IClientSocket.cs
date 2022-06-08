@@ -6,6 +6,6 @@ namespace Warehouse.Client.ClientSockets;
 public interface IClientSocket : ISocket
 {
     void BeginReceive();
-    event Action<IClientSocket, IPacket>? Received;
+    event Action<IClientSocket, IPacketHeader>? Received;
     event Action<IClientSocket>? RemoteDisconnecting;
 }

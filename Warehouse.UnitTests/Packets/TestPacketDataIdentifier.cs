@@ -12,7 +12,7 @@ public class TestPacketDataIdentifier
     public TestPacketDataIdentifier()
     {
         identifier = new PacketDataIdentifier();
-        serializer = new PacketDataSerializer(identifier, new PacketFactory());
+        serializer = new PacketDataSerializer(identifier, new PacketHeaderFactory());
     }
 
     [Fact]

@@ -15,7 +15,7 @@ public partial class Socket : ISocket
         );
     }
 
-    public Task<ISocketOperationResult> Send(IPacket packet)
+    public Task<ISocketOperationResult> Send(IPacketHeader packet)
     {
         var buffer = MessagePackSerializer.Serialize(packet);
         return Send(buffer, 0, buffer.Length, SocketFlags.None);
@@ -51,7 +51,7 @@ public partial class Socket : ISocket
     }
 
     public IAsyncResult BeginSend(
-        IPacket packet,
+        IPacketHeader packet,
         Action<IAsyncResult> callback,
         SocketFlags socketFlags = SocketFlags.None,
         object? state = null

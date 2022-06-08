@@ -5,7 +5,7 @@ namespace Warehouse.Server.SocketClients;
 
 public partial class SocketClient : IDisposable
 {
-    public event Action<ISocketClient, IPacket>? Received;
+    public event Action<ISocketClient, IPacketHeader>? Received;
     private const int BufferSize = 8192;
     private byte[] receiveBuffer = null!;
 

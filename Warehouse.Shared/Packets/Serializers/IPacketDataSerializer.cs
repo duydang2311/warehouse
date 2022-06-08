@@ -2,9 +2,9 @@ namespace Warehouse.Shared.Packets.Serializers;
 
 public interface IPacketDataSerializer
 {
-    IPacket? TrySerialize<T>(T packetData) where T : IPacketData;
-    Task<IPacket?> TrySerializeAsync<T>(T packetData) where T : IPacketData;
-    T? TryDeserialize<T>(IPacket packet) where T : IPacketData;
-    Task<T?> TryDeserializeAsync<T>(IPacket packet) where T : IPacketData;
-    Task<IPacket?> TryDeserializeAsync(Stream stream);
+    IPacketHeader? TrySerialize<T>(T packetData) where T : IPacketData;
+    Task<IPacketHeader?> TrySerializeAsync<T>(T packetData) where T : IPacketData;
+    T? TryDeserialize<T>(IPacketHeader packet) where T : IPacketData;
+    Task<T?> TryDeserializeAsync<T>(IPacketHeader packet) where T : IPacketData;
+    Task<IPacketHeader?> TryDeserializeAsync(Stream stream);
 }

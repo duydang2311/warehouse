@@ -7,5 +7,5 @@ public interface ISocketClient : ISocket
 {
     void BeginReceive();
     event Action<ISocketClient>? Disconnecting;
-    event Action<ISocketClient, IPacket>? Received;
+    event Action<ISocketClient, IPacketHeader>? Received;
 }

@@ -40,7 +40,7 @@ public class PacketDataIdentifier : IPacketDataIdentifier
         return null;
     }
 
-    public bool Is<T>(IPacket packet) where T : IPacketData
+    public bool Is<T>(IPacketHeader packet) where T : IPacketData
     {
         return packet.Identity != 0 && packet.Identity == TryIdentify<T>();
     }

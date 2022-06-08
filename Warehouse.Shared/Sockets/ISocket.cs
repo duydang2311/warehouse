@@ -24,12 +24,12 @@ public partial interface ISocket : IDisposable
     );
 
     public System.Net.Sockets.Socket EndAccept(IAsyncResult asyncResult);
-    Task<ISocketOperationResult> Send(IPacket packet);
+    Task<ISocketOperationResult> Send(IPacketHeader packet);
     Task<ISocketOperationResult> Send(byte[] bytes);
     Task<ISocketOperationResult> Send(byte[] bytes, int offset, int size);
     Task<ISocketOperationResult> Send(byte[] bytes, int offset, int size, SocketFlags socketFlags);
     public IAsyncResult BeginSend(
-        IPacket packet,
+        IPacketHeader packet,
         Action<IAsyncResult> callback,
         SocketFlags socketFlags,
         object? state
@@ -54,7 +54,7 @@ public partial interface ISocket : IDisposable
         SocketFlags socketFlags
     );
     IAsyncResult BeginReceive(
-        IPacket packet,
+        IPacketHeader packet,
         Action<IAsyncResult> callback,
         SocketFlags socketFlags,
         object? state

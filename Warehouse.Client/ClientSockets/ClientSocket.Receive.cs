@@ -5,7 +5,7 @@ namespace Warehouse.Client.ClientSockets;
 
 public partial class ClientSocket
 {
-    public event Action<IClientSocket, IPacket>? Received;
+    public event Action<IClientSocket, IPacketHeader>? Received;
     private const int BufferSize = 8192;
     private byte[] receiveBuffer = null!;
 

@@ -30,7 +30,7 @@ public class Program
         Console.ReadKey();
     }
 
-    private static void Received(IClientSocket sender, IPacket packet)
+    private static void Received(IClientSocket sender, IPacketHeader packet)
     {
         Console.Write(
             $"Packet {packet.Identity} has {packet.Buffer.Length} bytes: {string.Join(' ', packet.Buffer)}"

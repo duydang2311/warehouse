@@ -42,7 +42,7 @@ public class Program
         client.Dispose();
     }
 
-    public static void Client_Received(ISocketClient client, IPacket packet)
+    public static void Client_Received(ISocketClient client, IPacketHeader packet)
     {
         Console.Write(
             $"Packet {packet.Identity} has {packet.Buffer.Length} bytes: {string.Join(' ', packet.Buffer)}"

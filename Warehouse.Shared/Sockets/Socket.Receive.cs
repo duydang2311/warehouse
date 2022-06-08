@@ -15,7 +15,7 @@ public partial class Socket : ISocket
         );
     }
 
-    public Task<ISocketOperationResult> Receive(IPacket packet)
+    public Task<ISocketOperationResult> Receive(IPacketHeader packet)
     {
         var buffer = MessagePackSerializer.Serialize(packet);
         return Receive(buffer, 0, buffer.Length, SocketFlags.None);
@@ -51,7 +51,7 @@ public partial class Socket : ISocket
     }
 
     public IAsyncResult BeginReceive(
-        IPacket packet,
+        IPacketHeader packet,
         Action<IAsyncResult> callback,
         SocketFlags socketFlags = SocketFlags.None,
         object? state = null

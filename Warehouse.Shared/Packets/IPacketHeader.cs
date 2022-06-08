@@ -2,8 +2,8 @@ using MessagePack;
 
 namespace Warehouse.Shared.Packets;
 
-[Union(0, typeof(Packet))]
-public interface IPacket
+[Union(0, typeof(PacketHeader))]
+public interface IPacketHeader
 {
     ulong Identity { get; }
 
