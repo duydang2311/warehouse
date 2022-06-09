@@ -6,21 +6,21 @@ namespace Warehouse.Shared.Packets.Serializers;
 public class PacketSerializer : IPacketSerializer
 {
     private readonly IPacketIdentifier identifier;
-    private readonly IPacketHeaderFactory PacketHeaderFactory;
+    private readonly IPacketHeaderFactory packetHeaderFactory;
 
-    public PacketSerializer(IPacketIdentifier identifier, IPacketHeaderFactory PacketHeaderFactory)
+    public PacketSerializer(IPacketIdentifier identifier, IPacketHeaderFactory packetHeaderFactory)
     {
         this.identifier = identifier;
-        this.PacketHeaderFactory = PacketHeaderFactory;
+        this.packetHeaderFactory = packetHeaderFactory;
     }
 
-    public IPacketHeader? TrySerialize<T>(T Packet) where T : IPacket
+    public IPacketHeader? TrySerialize<T>(T packet) where T : IPacket
     {
         try
         {
-            return PacketHeaderFactory.GetService(
+            return packetHeaderFactory.GetService(
                 identifier.TryIdentify<T>(),
-                MessagePackSerializer.Serialize<T>(Packet)
+                MessagePackSerializer.Serialize<T>(packet)
             );
         }
         catch
@@ -29,17 +29,31 @@ public class PacketSerializer : IPacketSerializer
         }
     }
 
-    public async Task<IPacketHeader?> TrySerializeAsync<T>(T Packet) where T : IPacket
+    public async Task<IPacketHeader?> TrySerializeAsync<T>(T packet) where T : IPacket
     {
         try
         {
             using var stream = new MemoryStream();
-            await MessagePackSerializer.SerializeAsync<T>(stream, Packet);
-            return PacketHeaderFactory.GetService(identifier.TryIdentify<T>(), stream.ToArray());
+            await MessagePackSerializer.SerializeAsync<T>(stream, packet);
+            return packetHeaderFactory.GetService(identifier.TryIdentify<T>(), stream.ToArray());
         }
         catch
         {
             return default(IPacketHeader?);
+        }
+    }
+
+    public async Task<Stream?> TrySerializeAsync(IPacketHeader header)
+    {
+        try
+        {
+            var stream = new MemoryStream();
+            await MessagePackSerializer.SerializeAsync(stream, header);
+            return stream;
+        }
+        catch
+        {
+            return default(Stream?);
         }
     }
 
@@ -72,11 +86,31 @@ public class PacketSerializer : IPacketSerializer
     {
         try
         {
+            stream.Position = 0;
             return await MessagePackSerializer.DeserializeAsync<IPacketHeader>(stream);
         }
         catch
         {
             return default(IPacketHeader?);
+        }
+    }
+
+    public async Task<T?> TryDeserializeAsync<T>(Stream stream) where T : IPacket
+    {
+        try
+        {
+            stream.Position = 0;
+            var header = await MessagePackSerializer.DeserializeAsync<IPacketHeader>(stream);
+            using var bufferStream = new MemoryStream(header.Buffer);
+            return await MessagePackSerializer.DeserializeAsync<T>(bufferStream);
+        }
+        catch
+        {
+#if DEBUG
+            throw;
+#else
+            return default(T?);
+#endif
         }
     }
 }
