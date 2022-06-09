@@ -28,7 +28,7 @@ public class Program
         Console.ReadKey();
     }
 
-    public static void Listener_Accepted(ISocketListener sender, ISocketHandler handler)
+    private static void Listener_Accepted(ISocketListener sender, ISocketHandler handler)
     {
         handler.BeginReceive();
         handler.Disconnecting += Client_Disconnecting;
@@ -36,13 +36,13 @@ public class Program
         Console.WriteLine($"{handler.RemoteEndPoint} connected");
     }
 
-    public static void Client_Disconnecting(ISocketHandler client)
+    private static void Client_Disconnecting(ISocketHandler client)
     {
         Console.WriteLine($"Disposing handler {client.RemoteEndPoint} due to disconnected");
         client.Dispose();
     }
 
-    public static void Client_Received(ISocketHandler client, IPacketHeader packet)
+    private static void Client_Received(ISocketHandler client, IPacketHeader packet)
     {
         Console.Write(
             $"Packet {packet.Identity} has {packet.Buffer.Length} bytes: {string.Join(' ', packet.Buffer)}"
