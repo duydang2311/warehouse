@@ -13,28 +13,28 @@ public partial interface ISocket : IDisposable
     Task<bool> Connect(string hostname, int port);
     Task<bool> Disconnect(bool reuseSocket);
     Task<System.Net.Sockets.Socket> Accept();
-    public IAsyncResult BeginAccept(Action<IAsyncResult> callback, object? state);
+    IAsyncResult BeginAccept(Action<IAsyncResult> callback, object? state);
 
-    public System.Net.Sockets.Socket EndAccept(out byte[] buffer, IAsyncResult asyncResult);
+    System.Net.Sockets.Socket EndAccept(out byte[] buffer, IAsyncResult asyncResult);
 
-    public System.Net.Sockets.Socket EndAccept(
+    System.Net.Sockets.Socket EndAccept(
         out byte[] buffer,
         out int bytesTransferred,
         IAsyncResult asyncResult
     );
 
-    public System.Net.Sockets.Socket EndAccept(IAsyncResult asyncResult);
+    System.Net.Sockets.Socket EndAccept(IAsyncResult asyncResult);
     Task<ISocketOperationResult> Send(IPacketHeader packet);
     Task<ISocketOperationResult> Send(byte[] bytes);
     Task<ISocketOperationResult> Send(byte[] bytes, int offset, int size);
     Task<ISocketOperationResult> Send(byte[] bytes, int offset, int size, SocketFlags socketFlags);
-    public IAsyncResult BeginSend(
+    IAsyncResult BeginSend(
         IPacketHeader packet,
         Action<IAsyncResult> callback,
         SocketFlags socketFlags,
         object? state
     );
-    public IAsyncResult BeginSend(
+    IAsyncResult BeginSend(
         byte[] buffer,
         Action<IAsyncResult> callback,
         int offset,
