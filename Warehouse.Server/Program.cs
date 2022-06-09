@@ -28,12 +28,12 @@ public class Program
         Console.ReadKey();
     }
 
-    public static void Listener_Accepted(ISocketHandler client)
+    public static void Listener_Accepted(ISocketListener sender, ISocketHandler handler)
     {
-        client.BeginReceive();
-        client.Disconnecting += Client_Disconnecting;
-        client.Received += Client_Received;
-        Console.WriteLine($"{client.RemoteEndPoint} connected");
+        handler.BeginReceive();
+        handler.Disconnecting += Client_Disconnecting;
+        handler.Received += Client_Received;
+        Console.WriteLine($"{handler.RemoteEndPoint} connected");
     }
 
     public static void Client_Disconnecting(ISocketHandler client)

@@ -5,7 +5,7 @@ namespace Warehouse.Server.SocketListeners;
 
 public partial class SocketListener : Socket, ISocketListener
 {
-    public event Action<ISocketHandler>? Accepted;
+    public event Action<ISocketListener, ISocketHandler>? Accepted;
 
     public void BeginAccept()
     {
@@ -21,7 +21,7 @@ public partial class SocketListener : Socket, ISocketListener
         BeginAccept(AcceptCallback);
         if (Accepted is not null)
         {
-            Accepted(client);
+            Accepted(this, client);
         }
     }
 
