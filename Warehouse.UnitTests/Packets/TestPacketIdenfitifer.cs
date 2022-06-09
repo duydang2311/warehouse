@@ -1,3 +1,4 @@
+using System.Reflection;
 using Warehouse.Shared.Packets;
 using Warehouse.Shared.Packets.Identifiers;
 using Warehouse.Shared.Packets.Serializers;
@@ -13,6 +14,15 @@ public class TestPacketIdentifier
     {
         identifier = new PacketIdentifier();
         serializer = new PacketSerializer(identifier, new PacketHeaderFactory());
+        identifier.Register(Assembly.GetExecutingAssembly());
+        foreach (var i in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+        {
+            if (i.Name == "Warehouse.Shared")
+            {
+                identifier.Register(Assembly.Load(i));
+                break;
+            }
+        }
     }
 
     [Fact]

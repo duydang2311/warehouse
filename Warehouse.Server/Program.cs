@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Server.SocketListeners;
 using Warehouse.Server.SocketHandlers;
 using Warehouse.Shared.Packets;
+using Warehouse.Shared.Packets.Identifiers;
 
 namespace Warehouse.Server;
 
@@ -20,6 +22,16 @@ public class Program
             .WithPackets();
         Provider = services.BuildServiceProvider();
         services.AddSingleton<IServiceProvider, ServiceProvider>(p => Provider);
+        var identifier = Provider.GetRequiredService<IPacketIdentifier>();
+        identifier.Register(Assembly.GetExecutingAssembly());
+        foreach (var i in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+        {
+            if (i.Name == "Warehouse.Shared")
+            {
+                identifier.Register(Assembly.Load(i));
+                break;
+            }
+        }
 
         var listener = Provider.GetRequiredService<ISocketListenerFactory>().GetService();
         listener.Bind("localhost", 4242);

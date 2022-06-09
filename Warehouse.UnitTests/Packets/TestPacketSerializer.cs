@@ -1,3 +1,4 @@
+using System.Reflection;
 using Warehouse.Shared.Packets;
 using Warehouse.Shared.Packets.Identifiers;
 using Warehouse.Shared.Packets.Serializers;
@@ -26,6 +27,15 @@ public class TestPacketSerializer
     {
         identifier = new PacketIdentifier();
         serializer = new PacketSerializer(identifier, new PacketHeaderFactory());
+        identifier.Register(Assembly.GetExecutingAssembly());
+        foreach (var i in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+        {
+            if (i.Name == "Warehouse.Shared")
+            {
+                identifier.Register(Assembly.Load(i));
+                break;
+            }
+        }
     }
 
     [Fact]
@@ -42,7 +52,7 @@ public class TestPacketSerializer
     [Fact]
     public async Task Deserialize_To_IPacket_Type_Async()
     {
-        ITestPacket packet = new TestPacket();
+        var packet = new TestPacket();
         var header = await serializer.TrySerializeAsync<ITestPacket>(packet);
         Assert.NotNull(header);
         using var stream = await serializer.TrySerializeAsync(header!);

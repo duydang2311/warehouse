@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using Warehouse.Client.ClientSockets;
 using Warehouse.Shared.NetHelpers;
 using Warehouse.Shared.Packets;
+using Warehouse.Shared.Packets.Identifiers;
 
 namespace Warehouse.Client;
 
@@ -14,6 +16,16 @@ public class Program
         var services = new ServiceCollection();
         services.WithBinaryHelpers().WithSockets().WithSocketClients().WithPackets();
         Provider = services.BuildServiceProvider();
+        var identifier = Provider.GetRequiredService<IPacketIdentifier>();
+        identifier.Register(Assembly.GetExecutingAssembly());
+        foreach (var i in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+        {
+            if (i.Name == "Warehouse.Shared")
+            {
+                identifier.Register(Assembly.Load(i));
+                break;
+            }
+        }
 
         var factory = Provider.GetRequiredService<IClientSocketFactory>();
         var client = factory.GetService();
