@@ -7,7 +7,7 @@ using Warehouse.Shared.Sockets;
 
 public interface ISocketListener : ISocket
 {
-    List<ISocketHandler> Clients { get; }
-    void BeginAccept();
-    event Action<ISocketListener, ISocketHandler>? Accepted;
+	List<ISocketHandler> Clients { get; }
+	void BeginAccept();
+	event Action<ISocketListener, ISocketHandler>? Accepted;
 }

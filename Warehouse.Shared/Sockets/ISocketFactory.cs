@@ -5,5 +5,5 @@ namespace Warehouse.Shared.Sockets;
 
 public interface ISocketFactory : IServiceFactory<System.Net.Sockets.Socket, ISocket>
 {
-    public ISocket GetService();
+	public ISocket GetService();
 }
