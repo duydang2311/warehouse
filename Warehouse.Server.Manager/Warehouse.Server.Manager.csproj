@@ -25,6 +25,10 @@
 		<PublishSingleFile>False</PublishSingleFile>
 		<Product>WarehouseManager</Product>
 	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="Views\AuthenticationPage.xaml" />
+		<None Remove="Views\TitleBarPage.xaml" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Content Include="Assets\SplashScreen.scale-200.png" />
@@ -37,10 +41,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.0" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-preview.4.22229.4" />
 		<PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.3" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
@@ -52,7 +56,13 @@
 		<ProjectCapability Include="Msix" />
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="ViewModels\" />
-		<Folder Include="Views\" />
+	  <Page Update="Views\TitleBarPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\AuthenticationPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
 	</ItemGroup>
 </Project>
