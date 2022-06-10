@@ -5,5 +5,5 @@ namespace Warehouse.Client.ClientSockets;
 
 public interface IClientSocketFactory : IServiceFactory<IClientSocket>
 {
-    IClientSocket GetService(System.Net.Sockets.Socket socket);
+	IClientSocket GetService(System.Net.Sockets.Socket socket);
 }

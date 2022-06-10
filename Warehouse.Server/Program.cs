@@ -15,7 +15,6 @@ public class Program
 	{
 		var services = new ServiceCollection();
 		services
-			.WithBinaryHelpers()
 			.WithSocketListeners()
 			.WithSocketHandlers()
 			.WithSockets()

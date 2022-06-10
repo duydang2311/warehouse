@@ -1,4 +1,3 @@
-using Warehouse.Shared.BinaryHelpers;
 using Warehouse.Shared.Packets;
 
 namespace Warehouse.Server.SocketHandlers;
