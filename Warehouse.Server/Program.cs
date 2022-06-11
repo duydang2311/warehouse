@@ -7,7 +7,7 @@ using Warehouse.Shared.Packets.Identifiers;
 
 namespace Warehouse.Server;
 
-public class Program
+public partial class Program
 {
 	public static ServiceProvider Provider { get; private set; } = null!;
 
@@ -36,7 +36,7 @@ public class Program
 		listener.Bind("localhost", 4242);
 		listener.BeginAccept();
 		listener.Accepted += Listener_Accepted;
-		Console.ReadKey();
+		ReadCommand();
 	}
 
 	private static void Listener_Accepted(ISocketListener sender, ISocketHandler handler)
