@@ -42,8 +42,6 @@ public sealed partial class Application : IApplication
 		var password = ReadPassword();
 		database.ConnectionStringBuilder.UserID = login;
 		database.ConnectionStringBuilder.Password = password;
-		Console.WriteLine("12345" == password);
-		Console.WriteLine(database.ConnectionStringBuilder.ToString());
 		try
 		{
 			using var connection = new SqlConnection(database.ConnectionStringBuilder.ToString());
@@ -84,7 +82,6 @@ public sealed partial class Application : IApplication
 			setAppRoleCmd.CommandType = System.Data.CommandType.StoredProcedure;
 			setAppRoleCmd.Parameters.AddWithValue("@rolename", name);
 			setAppRoleCmd.Parameters.AddWithValue("@password", hash);
-			Console.WriteLine("Authenticated successfully");
 			roleAuth.Name = name!;
 			roleAuth.Password = hash!;
 		}

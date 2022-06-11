@@ -29,11 +29,13 @@ public partial class Program
 			Console.WriteLine("Database authentication failed. Exiting the program");
 			return;
 		}
+		Console.WriteLine("Database authenticated successfully");
 		if (!app.TryAuthenticateRole())
 		{
 			Console.WriteLine("Role authentication failed. Exiting the program");
 			return;
 		}
+		Console.WriteLine("Role authenticated successfully");
 		var commandFactory = Provider.GetRequiredService<ICommandFactory>();
 		app.TryAddCommand(commandFactory.GetService("exit", "Exit the program", ExitCommand));
 		app.TryAddCommand(commandFactory.GetService("register", "Register a staff account", RegisterCommand));
