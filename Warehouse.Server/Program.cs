@@ -40,6 +40,7 @@ public partial class Program
 		var commandFactory = Provider.GetRequiredService<ICommandFactory>();
 		App.TryAddCommand(commandFactory.GetService("help", "List all available commands", HelpCommand));
 		App.TryAddCommand(commandFactory.GetService("exit", "Exit the program", ExitCommand));
+		App.TryAddCommand(commandFactory.GetService("quit", "Exit the program (same with 'exit')", ExitCommand));
 		App.TryAddCommand(commandFactory.GetAsyncService("register", "Register a staff account", RegisterCommand));
 		await App.BeginReadCommand();
 		CreateListener();
