@@ -4,12 +4,12 @@ namespace Warehouse.Server.Applications;
 
 public sealed partial class Application : IApplication
 {
-	private readonly Dictionary<string, ICommand> commandDict = new();
+	public IDictionary<string, ICommand> Commands { get; } = new Dictionary<string, ICommand>();
 	private void InitCommand()
 	{
-		commandDict.Add("help", commandFactory.GetService("help", "List all available commands", (_0, _1) =>
+		Commands.Add("help", commandFactory.GetService("help", "List all available commands", (_0, _1) =>
 		{
-			foreach (var pair in commandDict)
+			foreach (var pair in Commands)
 			{
 				Console.WriteLine($"> {pair.Key} - {pair.Value.Description}");
 			}
@@ -17,7 +17,7 @@ public sealed partial class Application : IApplication
 	}
 	public bool TryAddCommand(ICommand command)
 	{
-		return commandDict.TryAdd(command.Name, command);
+		return Commands.TryAdd(command.Name, command);
 	}
 	public async Task BeginReadCommand()
 	{
@@ -30,9 +30,9 @@ public sealed partial class Application : IApplication
 			}
 			var args = line.Split(' ', 2);
 			args[0] = args[0].ToLower();
-			if (commandDict.ContainsKey(args[0]))
+			if (Commands.ContainsKey(args[0]))
 			{
-				var command = commandDict[args[0]];
+				var command = Commands[args[0]];
 				if (command is IAsyncCommand asyncCommand)
 				{
 					await asyncCommand.Execute(args.Length == 1 ? "" : args[1]);
