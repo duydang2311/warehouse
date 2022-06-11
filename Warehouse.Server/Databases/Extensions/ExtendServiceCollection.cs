@@ -8,7 +8,7 @@ public static partial class ExtendServiceCollection
 	{
 		self
 			.AddSingleton<IDatabase, Database>()
-			.AddSingleton<IRoleAuthFactory, RoleAuthFactory>();
+			.AddTransient<IRoleAuth, RoleAuth>();
 		return self;
 	}
 }
