@@ -14,6 +14,28 @@ public class Database : IDatabase
 			TrustServerCertificate = true
 		};
 	}
+	public SqlConnection GetConnection(IRoleAuth auth)
+	{
+		var connection = new SqlConnection(ConnectionStringBuilder.ToString());
+		connection.Open();
+		using var cmd = new SqlCommand("sp_setapprole", connection);
+		cmd.CommandType = System.Data.CommandType.StoredProcedure;
+		cmd.Parameters.AddWithValue("@rolename", auth.Name);
+		cmd.Parameters.AddWithValue("@rolePassword", auth.Password);
+		cmd.ExecuteNonQuery();
+		return connection;
+	}
+	public async Task<SqlConnection> GetConnectionAsync(IRoleAuth auth)
+	{
+		var connection = new SqlConnection(ConnectionStringBuilder.ToString());
+		await connection.OpenAsync();
+		using var cmd = new SqlCommand("sp_setapprole", connection);
+		cmd.CommandType = System.Data.CommandType.StoredProcedure;
+		cmd.Parameters.AddWithValue("@rolename", auth.Name);
+		cmd.Parameters.AddWithValue("@rolePassword", auth.Password);
+		await cmd.ExecuteNonQueryAsync();
+		return connection;
+	}
 	public SqlConnection? TryGetConnection(IRoleAuth auth)
 	{
 		var connection = new SqlConnection(ConnectionStringBuilder.ToString());
