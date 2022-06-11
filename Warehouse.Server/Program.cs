@@ -7,8 +7,9 @@ namespace Warehouse.Server;
 public partial class Program
 {
 	public static ServiceProvider Provider { get; private set; } = null!;
+	private static IApplication App { get; set; } = null!;
 
-	public static void Main()
+	public static async Task Main()
 	{
 		var services = new ServiceCollection();
 		services
@@ -22,24 +23,24 @@ public partial class Program
 		Provider = services.BuildServiceProvider();
 		services.AddSingleton<IServiceProvider, ServiceProvider>(p => Provider);
 
-		var app = Provider.GetRequiredService<IApplication>();
-		app.RegisterPacketIdentifier();
-		if (!app.TryAuthenticateDatabase())
+		App = Provider.GetRequiredService<IApplication>();
+		App.RegisterPacketIdentifier();
+		if (!App.TryAuthenticateDatabase())
 		{
 			Console.WriteLine("Database authentication failed. Exiting the program");
 			return;
 		}
 		Console.WriteLine("Database authenticated successfully");
-		if (!app.TryAuthenticateRole())
+		if (!App.TryAuthenticateRole())
 		{
 			Console.WriteLine("Role authentication failed. Exiting the program");
 			return;
 		}
 		Console.WriteLine("Role authenticated successfully");
 		var commandFactory = Provider.GetRequiredService<ICommandFactory>();
-		app.TryAddCommand(commandFactory.GetService("exit", "Exit the program", ExitCommand));
-		app.TryAddCommand(commandFactory.GetService("register", "Register a staff account", RegisterCommand));
-		app.BeginReadCommand();
+		App.TryAddCommand(commandFactory.GetService("exit", "Exit the program", ExitCommand));
+		App.TryAddCommand(commandFactory.GetAsyncService("register", "Register a staff account", RegisterCommand));
+		await App.BeginReadCommand();
 		CreateListener();
 	}
 }
