@@ -1,6 +1,5 @@
 using Microsoft.Data.SqlClient;
 using System.Text;
-using System.Security;
 
 namespace Warehouse.Server.Applications;
 
@@ -17,6 +16,7 @@ public sealed partial class Application : IApplication
 			info = Console.ReadKey(true);
 			if (info.Key == ConsoleKey.Enter)
 			{
+				Console.Write(Environment.NewLine);
 				break;
 			}
 			if (info.Key != ConsoleKey.Backspace)
