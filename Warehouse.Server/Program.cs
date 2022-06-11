@@ -42,7 +42,7 @@ public partial class Program
 		App.TryAddCommand(commandFactory.GetService("exit", "Exit the program", ExitCommand));
 		App.TryAddCommand(commandFactory.GetService("quit", "Exit the program (same with 'exit')", ExitCommand));
 		App.TryAddCommand(commandFactory.GetAsyncService("register", "Register a staff account", RegisterCommand));
+		App.BeginListen("localhost", 4242);
 		await App.BeginReadCommand();
-		CreateListener();
 	}
 }

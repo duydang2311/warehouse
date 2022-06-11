@@ -1,23 +1,20 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
+using Warehouse.Shared.Packets;
+using Warehouse.Server.Databases;
+using Warehouse.Server.Commands;
 using Warehouse.Server.SocketListeners;
 using Warehouse.Server.SocketHandlers;
-using Warehouse.Shared.Packets;
-using Warehouse.Shared.Packets.Identifiers;
 
-namespace Warehouse.Server;
+namespace Warehouse.Server.Applications;
 
-public partial class Program
+public sealed partial class Application : IApplication
 {
-	private static void CreateListener()
+	public void BeginListen(string hostname, int port)
 	{
-		var listener = Provider.GetRequiredService<ISocketListenerFactory>().GetService();
-		listener.Bind("localhost", 4242);
-		listener.BeginAccept();
-		listener.Accepted += Listener_Accepted;
-		Console.WriteLine("Listening on localhost:4242");
+		SocketListener.Bind(hostname, port);
+		SocketListener.BeginAccept();
+		SocketListener.Accepted += Listener_Accepted;
+		Console.WriteLine($"Listening on {SocketListener.LocalEndPoint}");
 	}
-
 	private static void Listener_Accepted(ISocketListener sender, ISocketHandler handler)
 	{
 		handler.BeginReceive();
