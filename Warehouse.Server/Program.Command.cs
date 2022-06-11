@@ -40,25 +40,4 @@ public partial class Program
 			}
 		}
 	}
-	private static void HelpCommand()
-	{
-		Console.WriteLine("List of available commands: help, quit, register");
-		Console.WriteLine("  > help - list all available commands");
-		Console.WriteLine("  > exit - exit the program");
-		Console.WriteLine("  > register - register a staff account");
-	}
-	private static void ExitCommand()
-	{
-		Environment.Exit(0);
-	}
-	private static void RegisterCommand(string arg)
-	{
-		var args = arg.Split(' ', 2);
-		if (args.Length != 2)
-		{
-			Console.WriteLine("> register [username] [password]");
-			return;
-		}
-		Console.WriteLine($"An account with username {args[0]} has been registered");
-	}
 }
