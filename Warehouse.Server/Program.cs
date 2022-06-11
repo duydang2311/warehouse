@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Warehouse.Shared.Packets.Identifiers;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Warehouse.Server.Applications;
+using Warehouse.Server.Commands;
 
 namespace Warehouse.Server;
 
@@ -16,22 +16,28 @@ public partial class Program
 			.WithSocketHandlers()
 			.WithSockets()
 			.WithPackets()
-			.WithDatabases();
+			.WithDatabases()
+			.WithApplications()
+			.WithCommands();
 		Provider = services.BuildServiceProvider();
 		services.AddSingleton<IServiceProvider, ServiceProvider>(p => Provider);
-		Authenticate();
 
-		var identifier = Provider.GetRequiredService<IPacketIdentifier>();
-		identifier.Register(Assembly.GetExecutingAssembly());
-		foreach (var i in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+		var app = Provider.GetRequiredService<IApplication>();
+		app.RegisterPacketIdentifier();
+		if (!app.TryAuthenticateDatabase())
 		{
-			if (i.Name == "Warehouse.Shared")
-			{
-				identifier.Register(Assembly.Load(i));
-				break;
-			}
+			Console.WriteLine("Database authentication failed. Exiting the program");
+			return;
 		}
+		if (!app.TryAuthenticateRole())
+		{
+			Console.WriteLine("Role authentication failed. Exiting the program");
+			return;
+		}
+		var commandFactory = Provider.GetRequiredService<ICommandFactory>();
+		app.TryAddCommand(commandFactory.GetService("exit", "Exit the program", ExitCommand));
+		app.TryAddCommand(commandFactory.GetService("register", "Register a staff account", RegisterCommand));
+		app.BeginReadCommand();
 		CreateListener();
-		ReadCommand();
 	}
 }
