@@ -1,8 +1,10 @@
-﻿namespace Warehouse.Server;
+﻿using Warehouse.Server.Commands;
+
+namespace Warehouse.Server;
 
 public partial class Program
 {
-	private static void RegisterCommand(string arg)
+	private static void RegisterCommand(ICommand sender, string arg)
 	{
 		var args = arg.Split(' ', 2);
 		if (args.Length != 2)
