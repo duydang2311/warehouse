@@ -1,8 +1,5 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Warehouse.Server.SocketListeners;
-using Warehouse.Server.SocketHandlers;
-using Warehouse.Shared.Packets;
 using Warehouse.Shared.Packets.Identifiers;
 
 namespace Warehouse.Server;
