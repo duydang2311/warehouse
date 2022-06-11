@@ -8,5 +8,6 @@ public interface IApplication
 	bool TryAuthenticateDatabase();
 	bool TryAuthenticateRole();
 	bool TryAddCommand(ICommand command);
-	void BeginReadCommand();
+	Task BeginReadCommand();
+	Task<bool> RegisterAccount(string username, string password);
 }
