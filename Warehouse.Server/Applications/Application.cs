@@ -16,6 +16,5 @@ public sealed partial class Application : IApplication
 		this.roleAuth = roleAuth;
 		this.packetIdentifier = packetIdentifier;
 		this.commandFactory = commandFactory;
-		InitCommand();
 	}
 }

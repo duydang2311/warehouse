@@ -5,16 +5,6 @@ namespace Warehouse.Server.Applications;
 public sealed partial class Application : IApplication
 {
 	public IDictionary<string, ICommand> Commands { get; } = new Dictionary<string, ICommand>();
-	private void InitCommand()
-	{
-		Commands.Add("help", commandFactory.GetService("help", "List all available commands", (_0, _1) =>
-		{
-			foreach (var pair in Commands)
-			{
-				Console.WriteLine($"> {pair.Key} - {pair.Value.Description}");
-			}
-		}));
-	}
 	public bool TryAddCommand(ICommand command)
 	{
 		return Commands.TryAdd(command.Name, command);

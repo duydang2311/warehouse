@@ -38,6 +38,7 @@ public partial class Program
 		}
 		Console.WriteLine("Role authenticated successfully");
 		var commandFactory = Provider.GetRequiredService<ICommandFactory>();
+		App.TryAddCommand(commandFactory.GetService("help", "List all available commands", HelpCommand));
 		App.TryAddCommand(commandFactory.GetService("exit", "Exit the program", ExitCommand));
 		App.TryAddCommand(commandFactory.GetAsyncService("register", "Register a staff account", RegisterCommand));
 		await App.BeginReadCommand();
