@@ -19,7 +19,7 @@ public sealed partial class Application : IApplication
 	{
 		return commandDict.TryAdd(command.Name, command);
 	}
-	public void BeginReadCommand()
+	public async Task BeginReadCommand()
 	{
 		while (true)
 		{
@@ -32,7 +32,13 @@ public sealed partial class Application : IApplication
 			args[0] = args[0].ToLower();
 			if (commandDict.ContainsKey(args[0]))
 			{
-				commandDict[args[0]].Execute(args.Length == 1 ? "" : args[1]);
+				var command = commandDict[args[0]];
+				if (command is IAsyncCommand asyncCommand)
+				{
+					await asyncCommand.Execute(args.Length == 1 ? "" : args[1]);
+					continue;
+				}
+				command.Execute(args.Length == 1 ? "" : args[1]);
 			}
 		}
 	}
