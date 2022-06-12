@@ -25,6 +25,7 @@ public sealed partial class App : Application
             .AddSingleton<HomePage>()
             .AddSingleton<MainWindow>()
             .AddSingleton<IMainWindowViewModel, MainWindowViewModel>()
+            .AddSingleton<IAuthenticationPageViewModel, AuthenticationPageViewModel>()
             .AddSingleton<AuthenticationPage>();
         return serviceCollection.BuildServiceProvider();
     }
