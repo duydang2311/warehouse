@@ -9,6 +9,6 @@ public sealed partial class AuthenticationPage : Page
     public AuthenticationPage(IAuthenticationPageViewModel vm)
     {
         InitializeComponent();
-        ViewModel = vm;
+        DataContext = ViewModel = vm;
     }
 }

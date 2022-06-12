@@ -1,7 +1,5 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
-using System.Windows.Input;
 
 namespace Warehouse.Server.Manager.ViewModels;
 
@@ -33,11 +31,5 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
     }
     public void Login(object sender, RoutedEventArgs e)
     {
-        System.Diagnostics.Debug.WriteLine(Username);
-        System.Diagnostics.Debug.WriteLine(Password);
-        UsernameError += "Z";
-        PasswordError += "Z";
-        System.Diagnostics.Debug.WriteLine(UsernameError);
-        System.Diagnostics.Debug.WriteLine(PasswordError);
     }
 }

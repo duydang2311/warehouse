@@ -44,13 +44,13 @@
                         VerticalAlignment="Center"
                         Width="350"
                         VerticalContentAlignment="Center"
-                        Text="{x:Bind ViewModel.Username, Mode=OneWay}"
+                        Text="{Binding Username, Mode=TwoWay}"
                     />
                     <TextBlock
                         Foreground="MediumVioletRed"
                         FontWeight="Medium"
                         FontSize="12"
-                        Text="{x:Bind ViewModel.UsernameError, Mode=TwoWay}"
+                        Text="{Binding UsernameError}"
                     />
                 </StackPanel>
                 <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Vertical">
@@ -65,16 +65,17 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Width="350"
-                        Password="{x:Bind ViewModel.Password, Mode=OneWay}"
+                        Password="{Binding Password, Mode=TwoWay}"
                     />
                     <TextBlock
                         Foreground="MediumVioletRed"
                         FontWeight="Medium"
                         FontSize="12"
-                        Text="{x:Bind ViewModel.PasswordError, Mode=TwoWay}"
+                        Text="{Binding PasswordError}"
                     />
                 </StackPanel>
                 <Button
+                    x:Name="Button"
                     Grid.Column="0"
                     Grid.Row="2"
                     HorizontalAlignment="Center"
