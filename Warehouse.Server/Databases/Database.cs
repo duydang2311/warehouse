@@ -21,7 +21,7 @@ public class Database : IDatabase
 		using var cmd = new SqlCommand("sp_setapprole", connection);
 		cmd.CommandType = System.Data.CommandType.StoredProcedure;
 		cmd.Parameters.AddWithValue("@rolename", auth.Name);
-		cmd.Parameters.AddWithValue("@rolePassword", auth.Password);
+		cmd.Parameters.AddWithValue("@password", auth.Password);
 		cmd.ExecuteNonQuery();
 		return connection;
 	}
@@ -32,7 +32,7 @@ public class Database : IDatabase
 		using var cmd = new SqlCommand("sp_setapprole", connection);
 		cmd.CommandType = System.Data.CommandType.StoredProcedure;
 		cmd.Parameters.AddWithValue("@rolename", auth.Name);
-		cmd.Parameters.AddWithValue("@rolePassword", auth.Password);
+		cmd.Parameters.AddWithValue("@password", auth.Password);
 		await cmd.ExecuteNonQueryAsync();
 		return connection;
 	}
@@ -45,7 +45,7 @@ public class Database : IDatabase
 			using var cmd = new SqlCommand("sp_setapprole", connection);
 			cmd.CommandType = System.Data.CommandType.StoredProcedure;
 			cmd.Parameters.AddWithValue("@rolename", auth.Name);
-			cmd.Parameters.AddWithValue("@rolePassword", auth.Password);
+			cmd.Parameters.AddWithValue("@password", auth.Password);
 			cmd.ExecuteNonQuery();
 			return connection;
 		}
@@ -65,7 +65,7 @@ public class Database : IDatabase
 			using var cmd = new SqlCommand("sp_setapprole", connection);
 			cmd.CommandType = System.Data.CommandType.StoredProcedure;
 			cmd.Parameters.AddWithValue("@rolename", auth.Name);
-			cmd.Parameters.AddWithValue("@rolePassword", auth.Password);
+			cmd.Parameters.AddWithValue("@password", auth.Password);
 			await cmd.ExecuteNonQueryAsync();
 			return connection;
 		}
