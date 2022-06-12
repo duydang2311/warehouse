@@ -11,7 +11,7 @@ public interface IApplication
 	bool TryAuthenticateDatabase();
 	bool TryAuthenticateRole();
 	bool TryAddCommand(ICommand command);
-	Task BeginReadCommand();
+	Task ReadCommand();
 	Task<bool> RegisterAccount(string username, string password);
 	void BeginListen(string hostname, int port);
 }
