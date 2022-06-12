@@ -20,7 +20,13 @@
             x:Name="Frame"
             Content="{Binding Content}"
             Grid.Row="1"
-        />
+        >
+            <Frame.ContentTransitions>
+                <TransitionCollection>
+                    <PopupThemeTransition />
+                </TransitionCollection>
+            </Frame.ContentTransitions>
+        </Frame>
     </Grid>
 </Window>
 
