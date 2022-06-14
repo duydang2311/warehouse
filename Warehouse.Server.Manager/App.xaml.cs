@@ -11,6 +11,7 @@ public sealed partial class App : Application
 {
 	private static ServiceCollection serviceCollection = null!;
 	public new static App Current => (App)Application.Current;
+	public MainWindow Window => Services.GetRequiredService<MainWindow>();
 	public IServiceProvider Services { get; }
 	public App()
 	{
