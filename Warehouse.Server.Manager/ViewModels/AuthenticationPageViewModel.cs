@@ -1,19 +1,24 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.IO;
 using System.Net.Sockets;
 using Warehouse.Shared.Sockets.Clients;
 using Warehouse.Shared.Packets;
 using Warehouse.Shared.Packets.Serializers;
+using Warehouse.Shared.Packets.Identifiers;
+using Warehouse.Server.Manager.Messages;
 
 namespace Warehouse.Server.Manager.ViewModels;
 
 public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPageViewModel
 {
 	private readonly IPacketFactory packetFactory;
-	private readonly IPacketSerializer packetSerializer;
 	private readonly IClientSocket socket;
+	private readonly IPacketSerializer packetSerializer;
+	private readonly IPacketIdentifier packetIdentifier;
 	private string username;
 	private string password;
 	private string usernameError;
@@ -44,13 +49,15 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 		get => isEnabled;
 		set => SetProperty(ref isEnabled, value);
 	}
-	public AuthenticationPageViewModel(IClientSocket socket, IPacketFactory packetFactory, IPacketSerializer packetSerializer)
+	public AuthenticationPageViewModel(IClientSocket socket, IPacketFactory packetFactory, IPacketSerializer packetSerializer, IPacketIdentifier packetIdentifier)
 	{
 		this.socket = socket;
 		this.packetFactory = packetFactory;
 		this.packetSerializer = packetSerializer;
+		this.packetIdentifier = packetIdentifier;
 		isEnabled = false;
 		username = password = usernameError = passwordError = "";
+		socket.Received += AuthenticationResponded;
 	}
 	private bool ValidateUsername() => Username.Length >= 4;
 	private bool ValidatePassword() => Password.Length >= 8;
@@ -93,6 +100,23 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 		{
 			PasswordError = $"Authentication packet sent but failed somehow ({result.ErrorCode})";
 			return;
+		}
+	}
+	private async void AuthenticationResponded(IClientSocket sender, IPacketHeader header)
+	{
+		if (packetIdentifier.Is<IAuthenticationResponsePacket>(header))
+		{
+			var packet = await packetSerializer.TryDeserializeAsync<IAuthenticationResponsePacket>(header);
+			if (packet is null || !packet.Ok)
+			{
+				App.Current.Window.DispatcherQueue.TryEnqueue(() =>
+				{
+					PasswordError = "Failed to login";
+				});
+				return;
+			}
+			socket.Received -= AuthenticationResponded;
+			WeakReferenceMessenger.Default.Send<AuthenticatedMessage>();
 		}
 	}
 }
