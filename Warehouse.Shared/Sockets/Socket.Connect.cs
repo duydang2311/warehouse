@@ -14,10 +14,20 @@ public partial class Socket : ISocket
 	public Task<bool> Connect(string hostname, int port)
 	{
 		var taskCompletionSource = new TaskCompletionSource<bool>();
-		var host = Dns.GetHostEntry(hostname);
-		var ipAddress = host.AddressList[0];
-		var remoteEP = new IPEndPoint(ipAddress, port);
-		socket.BeginConnect(remoteEP, ConnectCallback, taskCompletionSource);
+		try
+		{
+			var host = Dns.GetHostEntry(hostname);
+			var ipAddress = host.AddressList[0];
+			var remoteEP = new IPEndPoint(ipAddress, port);
+			socket.BeginConnect(remoteEP, ConnectCallback, taskCompletionSource);
+		}
+		catch
+		{
+			taskCompletionSource.SetResult(false);
+#if DEBUG
+			throw;
+#endif
+		}
 		return taskCompletionSource.Task;
 	}
 
@@ -31,6 +41,9 @@ public partial class Socket : ISocket
 		catch
 		{
 			((TaskCompletionSource<bool>)ar.AsyncState!).SetResult(false);
+#if DEBUG
+			throw;
+#endif
 		}
 	}
 }
