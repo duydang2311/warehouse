@@ -1,9 +1,10 @@
 ﻿using Microsoft.UI.Xaml.Controls;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Messaging;
+using Warehouse.Server.Manager.Messages;
 
 namespace Warehouse.Server.Manager.ViewModels;
 
-public interface IMainWindowViewModel
+public interface IMainWindowViewModel : IRecipient<SocketConnectedMessage>
 {
-    Page Content { get; set; }
+    Page? Content { get; set; }
 }
