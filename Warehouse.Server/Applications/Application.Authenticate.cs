@@ -82,8 +82,8 @@ public sealed partial class Application : IApplication
 			setAppRoleCmd.CommandType = System.Data.CommandType.StoredProcedure;
 			setAppRoleCmd.Parameters.AddWithValue("@rolename", name);
 			setAppRoleCmd.Parameters.AddWithValue("@password", hash);
-			roleAuth.Name = name!;
-			roleAuth.Password = hash!;
+			RoleAuth.Name = name!;
+			RoleAuth.Password = hash!;
 		}
 		catch (SqlException)
 		{

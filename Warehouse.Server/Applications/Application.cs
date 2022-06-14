@@ -9,14 +9,14 @@ namespace Warehouse.Server.Applications;
 public sealed partial class Application : IApplication
 {
 	private readonly IDatabase database;
-	private readonly IRoleAuth roleAuth;
 	private readonly IPacketIdentifier packetIdentifier;
 	private readonly IPacketSerializer packetSerializer;
 	public ISocketListener SocketListener { get; }
+	public IRoleAuth RoleAuth { get; }
 	public Application(IDatabase database, IRoleAuth roleAuth, IPacketIdentifier packetIdentifier, IPacketSerializer packetSerializer, ISocketListenerFactory socketListenerFactory)
 	{
 		this.database = database;
-		this.roleAuth = roleAuth;
+		this.RoleAuth = roleAuth;
 		this.packetIdentifier = packetIdentifier;
 		this.packetSerializer = packetSerializer;
 		SocketListener = socketListenerFactory.GetService();

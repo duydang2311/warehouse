@@ -6,7 +6,7 @@ public sealed partial class Application : IApplication
 {
 	public async Task<bool> RegisterAccount(string username, string password)
 	{
-		using var connection = await database.TryGetConnectionAsync(roleAuth);
+		using var connection = await database.TryGetConnectionAsync(RoleAuth);
 		if (connection is null)
 		{
 			return false;

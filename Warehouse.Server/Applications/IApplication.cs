@@ -2,11 +2,13 @@ using Warehouse.Shared.Packets;
 using Warehouse.Server.SocketHandlers;
 using Warehouse.Server.Commands;
 using Warehouse.Server.SocketListeners;
+using Warehouse.Server.Databases;
 
 namespace Warehouse.Server.Applications;
 
 public interface IApplication
 {
+	IRoleAuth RoleAuth { get; }
 	IDictionary<string, ICommand> Commands { get; }
 	ISocketListener SocketListener { get; }
 	bool TryAuthenticateDatabase();
