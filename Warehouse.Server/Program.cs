@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Warehouse.Server.Applications;
+using Warehouse.Server.Databases;
 using Warehouse.Server.Commands;
+using Warehouse.Shared.Packets;
 
 namespace Warehouse.Server;
 
@@ -8,6 +10,7 @@ public partial class Program
 {
 	public static ServiceProvider Provider { get; private set; } = null!;
 	private static IApplication App { get; set; } = null!;
+	public static IDatabase Database { get; private set; } = null!;
 
 	public static async Task Main()
 	{
@@ -24,6 +27,7 @@ public partial class Program
 		services.AddSingleton<IServiceProvider, ServiceProvider>(p => Provider);
 
 		App = Provider.GetRequiredService<IApplication>();
+		Database = Provider.GetRequiredService<IDatabase>();
 		if (!App.TryAuthenticateDatabase())
 		{
 			Console.WriteLine("Database authentication failed. Exiting the program");
@@ -41,6 +45,7 @@ public partial class Program
 		App.TryAddCommand(commandFactory.GetService("exit", "Exit the program", ExitCommand));
 		App.TryAddCommand(commandFactory.GetService("quit", "Exit the program (same with 'exit')", ExitCommand));
 		App.TryAddCommand(commandFactory.GetAsyncService("register", "Register a staff account", RegisterCommand));
+		App.HandlePacketAsync<IAuthenticationPacket>(HandleAuthenticationPacket);
 		App.BeginListen("localhost", 4242);
 		while (true)
 			await App.ReadCommand();

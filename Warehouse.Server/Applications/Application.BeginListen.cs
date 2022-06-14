@@ -1,3 +1,4 @@
+using System;
 using Warehouse.Shared.Packets;
 using Warehouse.Server.Databases;
 using Warehouse.Server.Commands;
@@ -15,7 +16,7 @@ public sealed partial class Application : IApplication
 		SocketListener.Accepted += Listener_Accepted;
 		Console.WriteLine($"Listening on {SocketListener.LocalEndPoint}");
 	}
-	private static void Listener_Accepted(ISocketListener sender, ISocketHandler handler)
+	private void Listener_Accepted(ISocketListener sender, ISocketHandler handler)
 	{
 		handler.BeginReceive();
 		handler.Disconnecting += Client_Disconnecting;
@@ -23,16 +24,25 @@ public sealed partial class Application : IApplication
 		Console.WriteLine($"{handler.RemoteEndPoint} connected");
 	}
 
-	private static void Client_Disconnecting(ISocketHandler client)
+	private void Client_Disconnecting(ISocketHandler client)
 	{
 		Console.WriteLine($"Disposing handler {client.RemoteEndPoint} due to disconnected");
 		client.Dispose();
 	}
 
-	private static void Client_Received(ISocketHandler client, IPacketHeader packet)
+	private async void Client_Received(ISocketHandler handler, IPacketHeader header)
 	{
-		Console.WriteLine(
-			$"Packet {packet.Identity} has {packet.Buffer.Length} bytes: {string.Join(' ', packet.Buffer)}"
-		);
+		if (packetIdentifier.Is<IAuthenticationPacket>(header))
+		{
+			if (!packetDict.ContainsKey(typeof(IAuthenticationPacket)))
+			{
+				return;
+			}
+			var packet = await packetSerializer.TryDeserializeAsync<IAuthenticationPacket>(header);
+			if (packet is not null)
+			{
+				await ((Func<ISocketHandler, IAuthenticationPacket, Task>)packetDict[typeof(IAuthenticationPacket)])(handler, packet);
+			}
+		}
 	}
 }

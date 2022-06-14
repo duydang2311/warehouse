@@ -1,3 +1,5 @@
+using Warehouse.Shared.Packets;
+using Warehouse.Server.SocketHandlers;
 using Warehouse.Server.Commands;
 using Warehouse.Server.SocketListeners;
 
@@ -13,4 +15,5 @@ public interface IApplication
 	Task ReadCommand();
 	Task<bool> RegisterAccount(string username, string password);
 	void BeginListen(string hostname, int port);
+	void HandlePacketAsync<T>(Func<ISocketHandler, T, Task> handler) where T : IPacket;
 }
