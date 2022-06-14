@@ -3,6 +3,7 @@ using Warehouse.Server.Applications;
 using Warehouse.Server.Databases;
 using Warehouse.Server.Commands;
 using Warehouse.Shared.Packets;
+using Warehouse.Shared.Packets.Serializers;
 
 namespace Warehouse.Server;
 
@@ -11,6 +12,8 @@ public partial class Program
 	public static ServiceProvider Provider { get; private set; } = null!;
 	private static IApplication App { get; set; } = null!;
 	public static IDatabase Database { get; private set; } = null!;
+	public static IPacketFactory PacketFactory { get; private set; } = null!;
+	public static IPacketSerializer PacketSerializer { get; private set; } = null!;
 
 	public static async Task Main()
 	{
@@ -28,6 +31,8 @@ public partial class Program
 
 		App = Provider.GetRequiredService<IApplication>();
 		Database = Provider.GetRequiredService<IDatabase>();
+		PacketFactory = Provider.GetRequiredService<IPacketFactory>();
+		PacketSerializer = Provider.GetRequiredService<IPacketSerializer>();
 		if (!App.TryAuthenticateDatabase())
 		{
 			Console.WriteLine("Database authentication failed. Exiting the program");
