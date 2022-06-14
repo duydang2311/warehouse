@@ -76,7 +76,6 @@ public class SocketConnectionViewModel : ObservableObject, ISocketConnectionView
 	}
 	public async void Connect(object sender, RoutedEventArgs e)
 	{
-		System.Diagnostics.Debug.WriteLine(Hostname + " " + Port);
 		if (!ValidateForm())
 		{
 			return;
@@ -87,6 +86,7 @@ public class SocketConnectionViewModel : ObservableObject, ISocketConnectionView
 			Error = $"Could not connect to {hostname}:{port}";
 			return;
 		}
+		socket.BeginReceive();
 		WeakReferenceMessenger.Default.Send(new SocketConnectedMessage());
 	}
 }
