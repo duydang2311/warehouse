@@ -20,20 +20,12 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 	public string Username
 	{
 		get => username;
-		set
-		{
-			SetProperty(ref username, value);
-			UpdateIsEnabled();
-		}
+		set => SetProperty(ref username, value);
 	}
 	public string Password
 	{
 		get => password;
-		set
-		{
-			SetProperty(ref password, value);
-			UpdateIsEnabled();
-		}
+		set => SetProperty(ref password, value);
 	}
 	public string UsernameError
 	{
@@ -60,10 +52,6 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 	}
 	private bool ValidateUsername() => Username.Length >= 4;
 	private bool ValidatePassword() => Password.Length >= 8;
-	private void UpdateIsEnabled()
-	{
-		IsEnabled = ValidateUsername() && ValidatePassword();
-	}
 	private bool ValidateForm()
 	{
 		PasswordError = "";
@@ -112,6 +100,5 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 			PasswordError = $"Authentication packet sent but failed somehow ({result.ErrorCode})";
 			return;
 		}
-		System.Diagnostics.Debug.WriteLine("OK");
 	}
 }
