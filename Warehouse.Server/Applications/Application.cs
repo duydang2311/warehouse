@@ -1,4 +1,5 @@
 using Warehouse.Shared.Packets.Identifiers;
+using Warehouse.Shared.Packets.Serializers;
 using Warehouse.Server.Databases;
 using Warehouse.Server.Commands;
 using Warehouse.Server.SocketListeners;
@@ -10,14 +11,14 @@ public sealed partial class Application : IApplication
 	private readonly IDatabase database;
 	private readonly IRoleAuth roleAuth;
 	private readonly IPacketIdentifier packetIdentifier;
-	private readonly ICommandFactory commandFactory;
+	private readonly IPacketSerializer packetSerializer;
 	public ISocketListener SocketListener { get; }
-	public Application(IDatabase database, IRoleAuth roleAuth, IPacketIdentifier packetIdentifier, ICommandFactory commandFactory, ISocketListenerFactory socketListenerFactory)
+	public Application(IDatabase database, IRoleAuth roleAuth, IPacketIdentifier packetIdentifier, IPacketSerializer packetSerializer, ISocketListenerFactory socketListenerFactory)
 	{
 		this.database = database;
 		this.roleAuth = roleAuth;
 		this.packetIdentifier = packetIdentifier;
-		this.commandFactory = commandFactory;
+		this.packetSerializer = packetSerializer;
 		SocketListener = socketListenerFactory.GetService();
 	}
 }
