@@ -9,7 +9,7 @@ public class PacketIdentifier : IPacketIdentifier
 
 	public PacketIdentifier()
 	{
-		increment = (ulong)new Random().NextInt64() + 1;
+		increment = 129038219;
 		Register(Assembly.GetExecutingAssembly());
 		var entry = Assembly.GetEntryAssembly();
 		if (entry is null)
@@ -42,7 +42,6 @@ public class PacketIdentifier : IPacketIdentifier
 
 	public bool Is<T>(IPacketHeader packet) where T : IPacket
 	{
-		Console.WriteLine(packet.Identity + " vs" + TryIdentify<T>());
 		return packet.Identity != 0 && packet.Identity == TryIdentify<T>();
 	}
 
