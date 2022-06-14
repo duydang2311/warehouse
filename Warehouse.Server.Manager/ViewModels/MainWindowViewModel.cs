@@ -8,29 +8,29 @@ namespace Warehouse.Server.Manager.ViewModels;
 
 public class MainWindowViewModel : ObservableObject, IMainWindowViewModel
 {
-    private readonly SocketConnectionPage socketConnectionPage;
-    private readonly AuthenticationPage authenticationPage;
-    private readonly HomePage homePage;
-    private Page? content;
-    public Page? Content
-    {
-        get => content;
-        set => SetProperty(ref content, value);
-    }
-    public MainWindowViewModel(
-        SocketConnectionPage socketConnectionPage,
-        AuthenticationPage authenticationPage,
-        HomePage homePage
-    )
-    {
-        this.socketConnectionPage = socketConnectionPage;
-        this.authenticationPage = authenticationPage;
-        this.homePage = homePage;
-        Content = socketConnectionPage;
-        WeakReferenceMessenger.Default.Register(this);
-    }
-    public void Receive(SocketConnectedMessage sender)
-    {
-        Content = authenticationPage;
-    }
+	private readonly SocketConnectionPage socketConnectionPage;
+	private readonly AuthenticationPage authenticationPage;
+	private readonly HomePage homePage;
+	private Page? content;
+	public Page? Content
+	{
+		get => content;
+		set => SetProperty(ref content, value);
+	}
+	public MainWindowViewModel(
+		SocketConnectionPage socketConnectionPage,
+		AuthenticationPage authenticationPage,
+		HomePage homePage
+	)
+	{
+		this.socketConnectionPage = socketConnectionPage;
+		this.authenticationPage = authenticationPage;
+		this.homePage = homePage;
+		Content = socketConnectionPage;
+		WeakReferenceMessenger.Default.Register(this);
+	}
+	public void Receive(SocketConnectedMessage sender)
+	{
+		Content = authenticationPage;
+	}
 }

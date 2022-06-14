@@ -27,4 +27,9 @@ public class HomePageViewModel : ObservableObject, IHomePageViewModel
 			NavViewHeader = (string)selectedNavViewItem.Tag;
 		}
 	}
+	public HomePageViewModel()
+	{
+		navViewHeader = "";
+		selectedNavViewItem = null!;
+	}
 }
