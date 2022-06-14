@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using Warehouse.Server.Manager.Views;
 using Warehouse.Server.Manager.ViewModels;
-using Warehouse.Server.Manager.Models.Sockets;
+using Warehouse.Shared.Sockets.Clients;
 
 namespace Warehouse.Server.Manager;
 
@@ -21,12 +21,15 @@ public sealed partial class App : Application
 	{
 		serviceCollection = new ServiceCollection();
 		serviceCollection
+			.WithSockets()
 			.WithPackets()
+			.WithSocketClients()
 			.AddSingleton<MainWindow>()
 			.AddSingleton<SocketConnectionPage>()
 			.AddSingleton<AuthenticationPage>()
 			.AddSingleton<HomePage>()
-			.AddSingleton<ISocket, Socket>()
+			.AddSingleton<IClientSocketFactory, ClientSocketFactory>()
+			.AddSingleton<IClientSocket, ClientSocket>(p => (p.GetRequiredService<IClientSocketFactory>().GetService() as ClientSocket)!)
 			.AddSingleton<IMainWindowViewModel, MainWindowViewModel>()
 			.AddSingleton<ISocketConnectionViewModel, SocketConnectionViewModel>()
 			.AddSingleton<IAuthenticationPageViewModel, AuthenticationPageViewModel>()

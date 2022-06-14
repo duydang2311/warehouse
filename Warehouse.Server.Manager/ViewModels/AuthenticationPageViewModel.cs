@@ -1,7 +1,9 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
+using System;
+using System.IO;
 using System.Net.Sockets;
-using Warehouse.Server.Manager.Models.Sockets;
+using Warehouse.Shared.Sockets.Clients;
 using Warehouse.Shared.Packets;
 using Warehouse.Shared.Packets.Serializers;
 
@@ -11,7 +13,7 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 {
 	private readonly IPacketFactory packetFactory;
 	private readonly IPacketSerializer packetSerializer;
-	private readonly ISocket socket;
+	private readonly IClientSocket socket;
 	private string username;
 	private string password;
 	private string usernameError;
@@ -42,7 +44,7 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 		get => isEnabled;
 		set => SetProperty(ref isEnabled, value);
 	}
-	public AuthenticationPageViewModel(ISocket socket, IPacketFactory packetFactory, IPacketSerializer packetSerializer)
+	public AuthenticationPageViewModel(IClientSocket socket, IPacketFactory packetFactory, IPacketSerializer packetSerializer)
 	{
 		this.socket = socket;
 		this.packetFactory = packetFactory;
@@ -58,26 +60,18 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 		UsernameError = "";
 		if (username.Contains(' '))
 		{
-			UsernameError = "Username must not contain any spaces";
+			UsernameError = "Username must not have any spaces";
 			return false;
 		}
-		else if (!ValidateUsername() || username.Contains(' '))
+		else if (!ValidateUsername())
 		{
-			UsernameError = "Username must be longer than 3 letters";
+			UsernameError = "Username must have more than 3 letters";
 			return false;
-		}
-		else if (usernameError.Length != 0)
-		{
-			UsernameError = "";
 		}
 		if (!ValidatePassword())
 		{
-			PasswordError = "Username must be longer than 3 letters";
+			PasswordError = "Password must have more than 7 letters";
 			return false;
-		}
-		else if (UsernameError.Length != 0)
-		{
-			UsernameError = "";
 		}
 		return true;
 	}
