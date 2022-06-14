@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 namespace Warehouse.Server.Manager;
 public sealed partial class MainWindow : Window
 {
-    public MainWindow(IMainWindowViewModel viewModel, AuthenticationPage page, HomePage page2)
+    public MainWindow(IMainWindowViewModel vm)
     {
         InitializeComponent();
+        Grid.DataContext = vm;
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(TitleBar);
-        viewModel.Content = page;
-        Grid.DataContext = viewModel;
     }
 }

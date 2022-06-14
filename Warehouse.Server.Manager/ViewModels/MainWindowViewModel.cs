@@ -26,6 +26,7 @@ public class MainWindowViewModel : ObservableObject, IMainWindowViewModel
         this.socketConnectionPage = socketConnectionPage;
         this.authenticationPage = authenticationPage;
         this.homePage = homePage;
+        Content = socketConnectionPage;
         WeakReferenceMessenger.Default.Register(this);
     }
     public void Receive(SocketConnectedMessage sender)
