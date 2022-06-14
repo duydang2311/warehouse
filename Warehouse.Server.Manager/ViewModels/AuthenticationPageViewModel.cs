@@ -48,23 +48,45 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
         isEnabled = false;
         username = password = usernameError = passwordError = "";
     }
+    private bool ValidateUsername() => username.Length >= 4;
+    private bool ValidatePassword() => password.Length >= 8;
     private void UpdateIsEnabled()
     {
-        IsEnabled = true;
-        if (username.Length < 4
-        || password.Length < 8)
+        IsEnabled = ValidateUsername() && ValidatePassword();
+    }
+    private bool ValidateForm()
+    {
+        if (username.Contains(' '))
         {
-            IsEnabled = false;
-            return;
+            UsernameError = "Username must not contain any spaces";
+            return false;
         }
+        else if (!ValidateUsername() || username.Contains(' '))
+        {
+            UsernameError = "Username must be longer than 3 letters";
+            return false;
+        }
+        else if (usernameError.Length != 0)
+        {
+            UsernameError = "";
+        }
+        if (!ValidatePassword())
+        {
+            PasswordError = "Username must be longer than 3 letters";
+            return false;
+        }
+        else if (UsernameError.Length != 0)
+        {
+            UsernameError = "";
+        }
+        return true;
     }
     public void Login(object sender, RoutedEventArgs e)
     {
         Username = username.Trim();
-        UpdateIsEnabled();
-        if (isEnabled)
+        if (!ValidateForm())
         {
-            // implement: send auth
+            return;
         }
     }
 }
