@@ -1,8 +1,8 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Messaging;
-using System;
 using Warehouse.Server.Manager.Models.Sockets;
+using Warehouse.Server.Manager.Messages;
 
 namespace Warehouse.Server.Manager.ViewModels;
 
@@ -37,6 +37,7 @@ public class SocketConnectionViewModel : ObservableObject, ISocketConnectionView
     {
         this.socket = socket;
         hostname = "";
+        hostnameError = "";
         port = "";
         error = "";
     }
@@ -86,5 +87,6 @@ public class SocketConnectionViewModel : ObservableObject, ISocketConnectionView
             Error = $"Could not connect to {hostname}:{port}";
             return;
         }
+        WeakReferenceMessenger.Default.Send(new SocketConnectedMessage());
     }
 }
