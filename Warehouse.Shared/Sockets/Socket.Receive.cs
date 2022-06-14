@@ -9,15 +9,16 @@ public partial class Socket : ISocket
 {
 	private void ReceiveCallback(IAsyncResult ar)
 	{
+		System.Diagnostics.Debug.WriteLine("Did call");
 		var bytes = socket.EndReceive(ar, out var errorCode);
 		((TaskCompletionSource<ISocketOperationResult>)ar.AsyncState!).SetResult(
 			new SocketOperationResult(bytes, errorCode)
 		);
 	}
 
-	public Task<ISocketOperationResult> Receive(IPacketHeader packet)
+	public Task<ISocketOperationResult> Receive(IPacketHeader header)
 	{
-		var buffer = MessagePackSerializer.Serialize(packet);
+		var buffer = MessagePackSerializer.Serialize(header);
 		return Receive(buffer, 0, buffer.Length, SocketFlags.None);
 	}
 

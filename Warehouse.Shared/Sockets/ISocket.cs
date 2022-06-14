@@ -45,6 +45,7 @@ public partial interface ISocket : IDisposable
 	int EndSend(IAsyncResult asyncResult);
 
 	int EndSend(IAsyncResult asyncResult, out SocketError socketError);
+	Task<ISocketOperationResult> Receive(IPacketHeader header);
 	Task<ISocketOperationResult> Receive(byte[] bytes);
 	Task<ISocketOperationResult> Receive(byte[] bytes, int offset, int size);
 	Task<ISocketOperationResult> Receive(
