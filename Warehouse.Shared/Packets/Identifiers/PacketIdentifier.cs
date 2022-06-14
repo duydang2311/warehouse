@@ -10,6 +10,13 @@ public class PacketIdentifier : IPacketIdentifier
 	public PacketIdentifier()
 	{
 		increment = (ulong)new Random().NextInt64() + 1;
+		Register(Assembly.GetExecutingAssembly());
+		var entry = Assembly.GetEntryAssembly();
+		if (entry is null)
+		{
+			return;
+		}
+		Register(entry);
 	}
 
 	public ulong TryIdentify<T>() where T : IPacket
@@ -35,6 +42,7 @@ public class PacketIdentifier : IPacketIdentifier
 
 	public bool Is<T>(IPacketHeader packet) where T : IPacket
 	{
+		Console.WriteLine(packet.Identity + " vs" + TryIdentify<T>());
 		return packet.Identity != 0 && packet.Identity == TryIdentify<T>();
 	}
 
@@ -44,7 +52,7 @@ public class PacketIdentifier : IPacketIdentifier
 		{
 			if (type.IsInterface && type.GetInterface(typeof(IPacket).FullName!) is not null)
 			{
-				identityDict.Add(type, (ulong)increment++);
+				identityDict.Add(type, increment++);
 			}
 		}
 		foreach (var type in assembly.GetTypes())
@@ -53,7 +61,7 @@ public class PacketIdentifier : IPacketIdentifier
 			{
 				foreach (var i in identityDict)
 				{
-					if (type.IsAssignableTo(i.Key))
+					if (i.Key is not IPacket && type.IsAssignableTo(i.Key))
 					{
 						identityDict.Add(type, i.Value);
 						break;

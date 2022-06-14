@@ -16,16 +16,6 @@ public class Program
 		var services = new ServiceCollection();
 		services.WithSockets().WithSocketClients().WithPackets();
 		Provider = services.BuildServiceProvider();
-		var identifier = Provider.GetRequiredService<IPacketIdentifier>();
-		identifier.Register(Assembly.GetExecutingAssembly());
-		foreach (var i in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
-		{
-			if (i.Name == "Warehouse.Shared")
-			{
-				identifier.Register(Assembly.Load(i));
-				break;
-			}
-		}
 
 		var factory = Provider.GetRequiredService<IClientSocketFactory>();
 		var client = factory.GetService();
