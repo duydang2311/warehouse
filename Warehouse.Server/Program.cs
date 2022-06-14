@@ -24,7 +24,6 @@ public partial class Program
 		services.AddSingleton<IServiceProvider, ServiceProvider>(p => Provider);
 
 		App = Provider.GetRequiredService<IApplication>();
-		App.RegisterPacketIdentifier();
 		if (!App.TryAuthenticateDatabase())
 		{
 			Console.WriteLine("Database authentication failed. Exiting the program");

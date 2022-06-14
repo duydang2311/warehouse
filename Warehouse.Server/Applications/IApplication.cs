@@ -7,7 +7,6 @@ public interface IApplication
 {
 	IDictionary<string, ICommand> Commands { get; }
 	ISocketListener SocketListener { get; }
-	void RegisterPacketIdentifier();
 	bool TryAuthenticateDatabase();
 	bool TryAuthenticateRole();
 	bool TryAddCommand(ICommand command);
