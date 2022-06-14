@@ -31,7 +31,7 @@ public sealed partial class Application : IApplication
 
 	private static void Client_Received(ISocketHandler client, IPacketHeader packet)
 	{
-		Console.Write(
+		Console.WriteLine(
 			$"Packet {packet.Identity} has {packet.Buffer.Length} bytes: {string.Join(' ', packet.Buffer)}"
 		);
 	}
