@@ -2,8 +2,12 @@ namespace Warehouse.Shared.Packets;
 
 public class PacketFactory : IPacketFactory
 {
-	public T GetService<T>(string username, string password) where T : class, IAuthenticationPacket
+	public IAuthenticationPacket GetAuthenticationPacket(string username, string password)
 	{
-		return (new AuthenticationPacket(username, password) as T)!;
+		return new AuthenticationPacket(username, password);
+	}
+	public IAuthenticationResponsePacket GetAuthenticationResponsePacket(bool ok)
+	{
+		return new AuthenticationResponsePacket(ok);
 	}
 }
