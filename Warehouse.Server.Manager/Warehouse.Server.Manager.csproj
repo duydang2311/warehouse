@@ -65,4 +65,7 @@
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Warehouse.Shared\Warehouse.Shared.csproj" />
+	</ItemGroup>
 </Project>
