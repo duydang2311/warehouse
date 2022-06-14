@@ -27,10 +27,18 @@ public class MainWindowViewModel : ObservableObject, IMainWindowViewModel
 		this.authenticationPage = authenticationPage;
 		this.homePage = homePage;
 		Content = socketConnectionPage;
-		WeakReferenceMessenger.Default.Register(this);
+		WeakReferenceMessenger.Default.Register<SocketConnectedMessage>(this);
+		WeakReferenceMessenger.Default.Register<AuthenticatedMessage>(this);
 	}
 	public void Receive(SocketConnectedMessage sender)
 	{
 		Content = authenticationPage;
+	}
+	public void Receive(AuthenticatedMessage sender)
+	{
+		homePage.DispatcherQueue.TryEnqueue(() =>
+		{
+			Content = homePage;
+		});
 	}
 }
