@@ -1,5 +1,4 @@
 ﻿using Microsoft.Toolkit.Mvvm.Messaging.Messages;
-using Warehouse.Server.Manager.ViewModels;
 
 namespace Warehouse.Server.Manager.Messages;
 
