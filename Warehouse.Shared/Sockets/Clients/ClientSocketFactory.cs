@@ -1,7 +1,7 @@
 using System.Net.Sockets;
 using Warehouse.Shared.Packets.Serializers;
 
-namespace Warehouse.Client.ClientSockets;
+namespace Warehouse.Shared.Sockets.Clients;
 
 public class ClientSocketFactory : IClientSocketFactory
 {

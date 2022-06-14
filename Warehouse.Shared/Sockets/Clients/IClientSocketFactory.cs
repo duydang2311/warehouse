@@ -1,7 +1,7 @@
 using Warehouse.Shared.Services;
 using Warehouse.Shared.Sockets;
 
-namespace Warehouse.Client.ClientSockets;
+namespace Warehouse.Shared.Sockets.Clients;
 
 public interface IClientSocketFactory : IServiceFactory<IClientSocket>
 {

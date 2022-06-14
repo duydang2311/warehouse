@@ -1,6 +1,6 @@
 using Warehouse.Shared.Packets;
 
-namespace Warehouse.Client.ClientSockets;
+namespace Warehouse.Shared.Sockets.Clients;
 
 public partial class ClientSocket
 {

@@ -1,7 +1,7 @@
 using Warehouse.Shared.Sockets;
 using Warehouse.Shared.Packets.Serializers;
 
-namespace Warehouse.Client.ClientSockets;
+namespace Warehouse.Shared.Sockets.Clients;
 
 public partial class ClientSocket : Socket, IClientSocket
 {
