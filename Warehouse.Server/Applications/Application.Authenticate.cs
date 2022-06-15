@@ -3,8 +3,6 @@ using System.Text;
 
 namespace Warehouse.Server.Applications;
 
-using BCrypt.Net;
-
 public sealed partial class Application : IApplication
 {
 	private static string ReadPassword()
@@ -65,25 +63,13 @@ public sealed partial class Application : IApplication
 		var password = ReadPassword();
 		try
 		{
-			using var connection = new SqlConnection(database.ConnectionStringBuilder.ToString());
-			connection.Open();
-			using var cmd = new SqlCommand("select top 1 Hash from ApplicationRoles where Name = @Name", connection);
-			cmd.Parameters.AddWithValue("@Name", name);
-			var hash = (string)cmd.ExecuteScalar();
-			if (hash is null)
+			RoleAuth.Name = name!.Trim();
+			RoleAuth.Password = password.Trim();
+			using var connection = database.TryGetConnection(RoleAuth);
+			if (connection is null)
 			{
 				return false;
 			}
-			if (!BCrypt.Verify(password, hash))
-			{
-				return false;
-			}
-			using var setAppRoleCmd = new SqlCommand("sp_setapprole", connection);
-			setAppRoleCmd.CommandType = System.Data.CommandType.StoredProcedure;
-			setAppRoleCmd.Parameters.AddWithValue("@rolename", name);
-			setAppRoleCmd.Parameters.AddWithValue("@password", hash);
-			RoleAuth.Name = name!;
-			RoleAuth.Password = hash!;
 		}
 		catch (SqlException)
 		{

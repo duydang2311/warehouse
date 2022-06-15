@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using Warehouse.Server.Manager.Views;
 using Warehouse.Server.Manager.ViewModels;
+using Warehouse.Server.Manager.Databases;
 
 namespace Warehouse.Server.Manager;
 
@@ -20,15 +21,13 @@ public sealed partial class App : Application
 	private static IServiceProvider ConfigureServices()
 	{
 		services = new ServiceCollection()
-			.WithSockets()
-			.WithPackets()
-			.WithSocketClients()
+			.WithDatabases()
 			.AddSingleton<MainWindow>()
-			.AddSingleton<SocketConnectionPage>()
+			.AddSingleton<DatabaseConnectionPage>()
 			.AddSingleton<AuthenticationPage>()
 			.AddSingleton<HomePage>()
 			.AddSingleton<IMainWindowViewModel, MainWindowViewModel>()
-			.AddSingleton<ISocketConnectionViewModel, SocketConnectionViewModel>()
+			.AddSingleton<IDatabaseConnectionViewModel, DatabaseConnectionViewModel>()
 			.AddSingleton<IAuthenticationPageViewModel, AuthenticationPageViewModel>()
 			.AddSingleton<IHomePageViewModel, HomePageViewModel>();
 		return services.BuildServiceProvider();

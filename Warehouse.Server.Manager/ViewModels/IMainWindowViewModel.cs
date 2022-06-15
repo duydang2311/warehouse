@@ -4,7 +4,7 @@ using Warehouse.Server.Manager.Messages;
 
 namespace Warehouse.Server.Manager.ViewModels;
 
-public interface IMainWindowViewModel : IRecipient<SocketConnectedMessage>, IRecipient<AuthenticatedMessage>
+public interface IMainWindowViewModel : IRecipient<DatabaseConnectedMessage>, IRecipient<AuthenticatedMessage>
 {
 	Page? Content { get; set; }
 }

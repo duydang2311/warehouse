@@ -2,30 +2,22 @@
 using Microsoft.Toolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
-using System.IO;
-using System.Net.Sockets;
-using Warehouse.Shared.Sockets.Clients;
-using Warehouse.Shared.Packets;
-using Warehouse.Shared.Packets.Serializers;
-using Warehouse.Shared.Packets.Identifiers;
+using Microsoft.Data.SqlClient;
+using Warehouse.Server.Manager.Databases;
 using Warehouse.Server.Manager.Messages;
-using TcpClient = Warehouse.Shared.TcpClients.TcpClient;
-using Warehouse.Shared.TcpClients;
+
 
 namespace Warehouse.Server.Manager.ViewModels;
 
 public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPageViewModel
 {
-	private readonly IPacketFactory packetFactory;
-	private readonly ITcpClientFactory tcpClientFactory;
-	private readonly IPacketSerializer packetSerializer;
-	private readonly IPacketIdentifier packetIdentifier;
+	private readonly IDatabase database;
+	private readonly IRoleAuth roleAuth;
 	private string username;
 	private string password;
 	private string usernameError;
 	private string passwordError;
-	private bool isEnabled = false;
+	private object buttonContent;
 	public string Username
 	{
 		get => username;
@@ -46,89 +38,60 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 		get => passwordError;
 		set => SetProperty(ref passwordError, value);
 	}
-	public bool IsEnabled
+	public object ButtonContent
 	{
-		get => isEnabled;
-		set => SetProperty(ref isEnabled, value);
+		get => buttonContent;
+		set => SetProperty(ref buttonContent, value);
 	}
-	public AuthenticationPageViewModel(ITcpClientFactory tcpClientFactory, IPacketFactory packetFactory, IPacketSerializer packetSerializer, IPacketIdentifier packetIdentifier)
+	public AuthenticationPageViewModel(IDatabase database, IRoleAuth roleAuth)
 	{
-		this.tcpClientFactory = tcpClientFactory;
-		this.packetFactory = packetFactory;
-		this.packetSerializer = packetSerializer;
-		this.packetIdentifier = packetIdentifier;
-		isEnabled = false;
+		this.database = database;
+		this.roleAuth = roleAuth;
 		username = password = usernameError = passwordError = "";
+		buttonContent = "Login";
 	}
-	private bool ValidateUsername() => Username.Length >= 4;
-	private bool ValidatePassword() => Password.Length >= 8;
 	private bool ValidateForm()
 	{
 		PasswordError = "";
 		UsernameError = "";
-		if (username.Contains(' '))
+		if (Username.Length == 0)
 		{
-			UsernameError = "Username must not have any spaces";
+			UsernameError = "Username cannot be blank";
 			return false;
 		}
-		else if (!ValidateUsername())
+		if (Password.Length == 0)
 		{
-			UsernameError = "Username must have more than 3 letters";
-			return false;
-		}
-		if (!ValidatePassword())
-		{
-			PasswordError = "Password must have more than 7 letters";
+			PasswordError = "Password cannot be blank";
 			return false;
 		}
 		return true;
 	}
-	public void Login(object sender, RoutedEventArgs e)
+	public async void Login(object sender, RoutedEventArgs e)
 	{
 		Username = Username.Trim();
 		if (!ValidateForm())
 		{
 			return;
 		}
-		var header = packetSerializer.TrySerialize(packetFactory.GetAuthenticationPacket(Username, Password));
-		if (header is null)
+		ButtonContent = new ProgressRing { Width = 25, Height = 25 };
+		using var connection = await database.TryGetConnectionAsync(roleAuth);
+		if (connection is null)
 		{
-			PasswordError = "Could not serialize authentication packet";
+			ButtonContent = "Login";
+			PasswordError = "Cannot establish connection to database";
 			return;
 		}
-		var client = tcpClientFactory.GetService()!;
-		client.Received += AuthenticationResponded;
-		System.Diagnostics.Debug.WriteLine("subscibed");
-		var bytes = client.Send(header);
-		if (bytes == 0)
+		System.Diagnostics.Debug.WriteLine(Username + " " + Password);
+		using var cmd = new SqlCommand("select dbo.udf_TryLoginToStaffAccount(@name, @password)", connection);
+		cmd.Parameters.AddWithValue("@name", Username);
+		cmd.Parameters.AddWithValue("@password", Password);
+		var ok = (bool)(await cmd.ExecuteScalarAsync())!;
+		ButtonContent = "Login";
+		if (!ok)
 		{
-			PasswordError = $"Failed to send authentication packet";
+			PasswordError = "Wrong credentials, could not login to any staff account";
 			return;
 		}
-		System.Diagnostics.Debug.WriteLine("sent");
-	}
-	private async void AuthenticationResponded(TcpClient sender, IPacketHeader header)
-	{
-		System.Diagnostics.Debug.WriteLine("Did call");
-		if (packetIdentifier.Is<IAuthenticationPacket>(header))
-		{
-			var packet = await packetSerializer.TryDeserializeAsync<IAuthenticationPacket>(header);
-			System.Diagnostics.Debug.WriteLine(packet!.Username + " " + packet.Password);
-		}
-		else if (packetIdentifier.Is<IAuthenticationResponsePacket>(header))
-		{
-			var packet = await packetSerializer.TryDeserializeAsync<IAuthenticationResponsePacket>(header);
-			if (packet is null || !packet.Ok)
-			{
-				App.Current.Window.DispatcherQueue.TryEnqueue(() =>
-				{
-					PasswordError = "Failed to login";
-				});
-				return;
-			}
-			var client = tcpClientFactory.GetService()!;
-			client.Received -= AuthenticationResponded;
-			WeakReferenceMessenger.Default.Send<AuthenticatedMessage>();
-		}
+		WeakReferenceMessenger.Default.Send<AuthenticatedMessage>();
 	}
 }

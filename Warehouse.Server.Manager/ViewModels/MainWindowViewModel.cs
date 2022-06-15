@@ -8,7 +8,7 @@ namespace Warehouse.Server.Manager.ViewModels;
 
 public class MainWindowViewModel : ObservableObject, IMainWindowViewModel
 {
-	private readonly SocketConnectionPage socketConnectionPage;
+	private readonly DatabaseConnectionPage databaseConnectionPage;
 	private readonly AuthenticationPage authenticationPage;
 	private readonly HomePage homePage;
 	private Page? content;
@@ -18,19 +18,19 @@ public class MainWindowViewModel : ObservableObject, IMainWindowViewModel
 		set => SetProperty(ref content, value);
 	}
 	public MainWindowViewModel(
-		SocketConnectionPage socketConnectionPage,
+		DatabaseConnectionPage databaseConnectionPage,
 		AuthenticationPage authenticationPage,
 		HomePage homePage
 	)
 	{
-		this.socketConnectionPage = socketConnectionPage;
+		this.databaseConnectionPage = databaseConnectionPage;
 		this.authenticationPage = authenticationPage;
 		this.homePage = homePage;
-		Content = socketConnectionPage;
-		WeakReferenceMessenger.Default.Register<SocketConnectedMessage>(this);
+		Content = databaseConnectionPage;
+		WeakReferenceMessenger.Default.Register<DatabaseConnectedMessage>(this);
 		WeakReferenceMessenger.Default.Register<AuthenticatedMessage>(this);
 	}
-	public void Receive(SocketConnectedMessage sender)
+	public void Receive(DatabaseConnectedMessage sender)
 	{
 		Content = authenticationPage;
 	}

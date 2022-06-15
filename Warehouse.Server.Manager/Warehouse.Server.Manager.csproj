@@ -5,6 +5,7 @@
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>Warehouse.Server.Manager</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<Platforms>x86;x64;arm64</Platforms>
 		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
 		<PublishProfile>win10-$(Platform).pubxml</PublishProfile>
@@ -28,7 +29,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="Views\AuthenticationPage.xaml" />
-		<None Remove="Views\SocketConnectionPage.xaml" />
+		<None Remove="Views\DatabaseConnectionPage.xaml" />
 		<None Remove="Views\TitleBarPage.xaml" />
 	</ItemGroup>
 
@@ -72,7 +73,7 @@
 		<ProjectReference Include="..\Warehouse.Shared\Warehouse.Shared.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Update="Views\SocketConnectionPage.xaml">
+		<Page Update="Views\DatabaseConnectionPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>

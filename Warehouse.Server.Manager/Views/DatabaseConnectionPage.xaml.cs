@@ -3,10 +3,10 @@ using Warehouse.Server.Manager.ViewModels;
 
 namespace Warehouse.Server.Manager.Views;
 
-public sealed partial class SocketConnectionPage : Page
+public sealed partial class DatabaseConnectionPage : Page
 {
-	private readonly ISocketConnectionViewModel ViewModel;
-	public SocketConnectionPage(ISocketConnectionViewModel vm)
+	private readonly IDatabaseConnectionViewModel ViewModel;
+	public DatabaseConnectionPage(IDatabaseConnectionViewModel vm)
 	{
 		this.InitializeComponent();
 		DataContext = ViewModel = vm;

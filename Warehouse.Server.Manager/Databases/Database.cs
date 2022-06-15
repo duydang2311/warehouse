@@ -1,6 +1,6 @@
 using Microsoft.Data.SqlClient;
 
-namespace Warehouse.Server.Databases;
+namespace Warehouse.Server.Manager.Databases;
 
 public class Database : IDatabase
 {
@@ -9,9 +9,8 @@ public class Database : IDatabase
 	{
 		ConnectionStringBuilder = new SqlConnectionStringBuilder()
 		{
-			DataSource = "DUYDANG",
 			InitialCatalog = "GearStore",
-			TrustServerCertificate = true
+			TrustServerCertificate = true,
 		};
 	}
 	public SqlConnection GetConnection(IRoleAuth auth)
@@ -26,11 +25,6 @@ public class Database : IDatabase
 		{
 			throw new ArgumentException("Wrong credentials");
 		}
-		using var cmdsetapprole = new SqlCommand("sp_setapprole", connection);
-		cmdsetapprole.CommandType = System.Data.CommandType.StoredProcedure;
-		cmdsetapprole.Parameters.AddWithValue("@rolename", auth.Name);
-		cmdsetapprole.Parameters.AddWithValue("@password", auth.Password);
-		cmdsetapprole.ExecuteNonQuery();
 		return connection;
 	}
 	public async Task<SqlConnection> GetConnectionAsync(IRoleAuth auth)
@@ -44,11 +38,6 @@ public class Database : IDatabase
 		{
 			throw new ArgumentException("Wrong credentials");
 		}
-		using var cmdsetapprole = new SqlCommand("sp_setapprole", connection);
-		cmdsetapprole.CommandType = System.Data.CommandType.StoredProcedure;
-		cmdsetapprole.Parameters.AddWithValue("@rolename", auth.Name);
-		cmdsetapprole.Parameters.AddWithValue("@password", auth.Password);
-		cmdsetapprole.ExecuteNonQuery();
 		return connection;
 	}
 	public SqlConnection? TryGetConnection(IRoleAuth auth)
@@ -72,11 +61,6 @@ public class Database : IDatabase
 			{
 				return null;
 			}
-			using var cmdsetapprole = new SqlCommand("sp_setapprole", connection);
-			cmdsetapprole.CommandType = System.Data.CommandType.StoredProcedure;
-			cmdsetapprole.Parameters.AddWithValue("@rolename", auth.Name);
-			cmdsetapprole.Parameters.AddWithValue("@password", auth.Password);
-			cmdsetapprole.ExecuteNonQuery();
 			return connection;
 		}
 		catch
@@ -107,11 +91,6 @@ public class Database : IDatabase
 			{
 				return null;
 			}
-			using var cmdsetapprole = new SqlCommand("sp_setapprole", connection);
-			cmdsetapprole.CommandType = System.Data.CommandType.StoredProcedure;
-			cmdsetapprole.Parameters.AddWithValue("@rolename", auth.Name);
-			cmdsetapprole.Parameters.AddWithValue("@password", auth.Password);
-			cmdsetapprole.ExecuteNonQuery();
 			return connection;
 		}
 		catch

@@ -79,7 +79,8 @@
                     Grid.Row="2"
                     HorizontalAlignment="Center"
                     Width="150"
-                    Content="Login"
+                    Height="40"
+                    Content="{Binding ButtonContent}"
                     Click="{x:Bind ViewModel.Login}"
                 />
 			</Grid>

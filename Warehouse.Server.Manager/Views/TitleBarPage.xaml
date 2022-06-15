@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <Border VerticalAlignment="Top" Padding="20, 7">
-        <TextBlock Text="Warehouse Manager" FontSize="16"/>
+    <Border VerticalAlignment="Top" Padding="10, 7">
+        <TextBlock Text="Gear Store" FontSize="16" FontWeight="Medium"/>
     </Border>
 </Page>
