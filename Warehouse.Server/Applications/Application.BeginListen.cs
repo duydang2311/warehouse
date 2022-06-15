@@ -1,7 +1,5 @@
-using System;
 using Warehouse.Shared.Packets;
-using Warehouse.Server.Databases;
-using Warehouse.Server.Commands;
+using Warehouse.Shared.TcpServers;
 using Warehouse.Server.SocketListeners;
 using Warehouse.Server.SocketHandlers;
 
@@ -9,28 +7,21 @@ namespace Warehouse.Server.Applications;
 
 public sealed partial class Application : IApplication
 {
-	public void BeginListen(string hostname, int port)
+	public void Start()
 	{
-		SocketListener.Bind(hostname, port);
-		SocketListener.BeginAccept();
-		SocketListener.Accepted += Listener_Accepted;
-		Console.WriteLine($"Listening on {SocketListener.LocalEndPoint}");
+		Server.Start();
+		Server.SessionCreated += SessionCreated;
+		Console.WriteLine($"Listening on {Server.Address}:{Server.Port}");
 	}
-	private void Listener_Accepted(ISocketListener sender, ISocketHandler handler)
+	private void SessionCreated(TcpServer sender, TcpSession session)
 	{
-		handler.BeginReceive();
-		handler.Disconnecting += Client_Disconnecting;
-		handler.Received += Client_Received;
-		Console.WriteLine($"{handler.RemoteEndPoint} connected");
+		foreach (var i in packetDict)
+		{
+			session.Received += Received;
+		}
+		Console.WriteLine($"{session.Id} connected");
 	}
-
-	private void Client_Disconnecting(ISocketHandler client)
-	{
-		Console.WriteLine($"Disposing handler {client.RemoteEndPoint} due to disconnected");
-		client.Dispose();
-	}
-
-	private async void Client_Received(ISocketHandler handler, IPacketHeader header)
+	private async void Received(TcpSession sender, IPacketHeader header)
 	{
 		if (packetIdentifier.Is<IAuthenticationPacket>(header))
 		{
@@ -41,7 +32,7 @@ public sealed partial class Application : IApplication
 			var packet = await packetSerializer.TryDeserializeAsync<IAuthenticationPacket>(header);
 			if (packet is not null)
 			{
-				await ((Func<ISocketHandler, IAuthenticationPacket, Task>)packetDict[typeof(IAuthenticationPacket)])(handler, packet);
+				await ((Func<TcpSession, IAuthenticationPacket, Task>)packetDict[typeof(IAuthenticationPacket)])(sender, packet);
 			}
 		}
 	}

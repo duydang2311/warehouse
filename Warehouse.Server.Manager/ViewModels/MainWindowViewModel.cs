@@ -36,9 +36,6 @@ public class MainWindowViewModel : ObservableObject, IMainWindowViewModel
 	}
 	public void Receive(AuthenticatedMessage sender)
 	{
-		homePage.DispatcherQueue.TryEnqueue(() =>
-		{
-			Content = homePage;
-		});
+		Content = homePage;
 	}
 }

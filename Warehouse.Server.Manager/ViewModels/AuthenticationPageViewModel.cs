@@ -10,13 +10,15 @@ using Warehouse.Shared.Packets;
 using Warehouse.Shared.Packets.Serializers;
 using Warehouse.Shared.Packets.Identifiers;
 using Warehouse.Server.Manager.Messages;
+using TcpClient = Warehouse.Shared.TcpClients.TcpClient;
+using Warehouse.Shared.TcpClients;
 
 namespace Warehouse.Server.Manager.ViewModels;
 
 public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPageViewModel
 {
 	private readonly IPacketFactory packetFactory;
-	private readonly IClientSocket socket;
+	private readonly ITcpClientFactory tcpClientFactory;
 	private readonly IPacketSerializer packetSerializer;
 	private readonly IPacketIdentifier packetIdentifier;
 	private string username;
@@ -49,15 +51,14 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 		get => isEnabled;
 		set => SetProperty(ref isEnabled, value);
 	}
-	public AuthenticationPageViewModel(IClientSocket socket, IPacketFactory packetFactory, IPacketSerializer packetSerializer, IPacketIdentifier packetIdentifier)
+	public AuthenticationPageViewModel(ITcpClientFactory tcpClientFactory, IPacketFactory packetFactory, IPacketSerializer packetSerializer, IPacketIdentifier packetIdentifier)
 	{
-		this.socket = socket;
+		this.tcpClientFactory = tcpClientFactory;
 		this.packetFactory = packetFactory;
 		this.packetSerializer = packetSerializer;
 		this.packetIdentifier = packetIdentifier;
 		isEnabled = false;
 		username = password = usernameError = passwordError = "";
-		socket.Received += AuthenticationResponded;
 	}
 	private bool ValidateUsername() => Username.Length >= 4;
 	private bool ValidatePassword() => Password.Length >= 8;
@@ -82,29 +83,39 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 		}
 		return true;
 	}
-	public async void Login(object sender, RoutedEventArgs e)
+	public void Login(object sender, RoutedEventArgs e)
 	{
 		Username = Username.Trim();
 		if (!ValidateForm())
 		{
 			return;
 		}
-		var header = await packetSerializer.TrySerializeAsync(packetFactory.GetAuthenticationPacket(Username, Password));
+		var header = packetSerializer.TrySerialize(packetFactory.GetAuthenticationPacket(Username, Password));
 		if (header is null)
 		{
 			PasswordError = "Could not serialize authentication packet";
 			return;
 		}
-		var result = await socket.Send(header);
-		if (result.ErrorCode != SocketError.Success)
+		var client = tcpClientFactory.GetService()!;
+		client.Received += AuthenticationResponded;
+		System.Diagnostics.Debug.WriteLine("subscibed");
+		var bytes = client.Send(header);
+		if (bytes == 0)
 		{
-			PasswordError = $"Authentication packet sent but failed somehow ({result.ErrorCode})";
+			PasswordError = $"Failed to send authentication packet";
 			return;
 		}
+		System.Diagnostics.Debug.WriteLine("sent");
 	}
-	private async void AuthenticationResponded(IClientSocket sender, IPacketHeader header)
+	private async void AuthenticationResponded(TcpClient sender, IPacketHeader header)
 	{
-		if (packetIdentifier.Is<IAuthenticationResponsePacket>(header))
+		System.Diagnostics.Debug.WriteLine("Did call");
+		if (packetIdentifier.Is<IAuthenticationPacket>(header))
+		{
+			var packet = await packetSerializer.TryDeserializeAsync<IAuthenticationPacket>(header);
+			System.Diagnostics.Debug.WriteLine(packet!.Username + " " + packet.Password);
+		}
+		else if (packetIdentifier.Is<IAuthenticationResponsePacket>(header))
 		{
 			var packet = await packetSerializer.TryDeserializeAsync<IAuthenticationResponsePacket>(header);
 			if (packet is null || !packet.Ok)
@@ -115,7 +126,8 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 				});
 				return;
 			}
-			socket.Received -= AuthenticationResponded;
+			var client = tcpClientFactory.GetService()!;
+			client.Received -= AuthenticationResponded;
 			WeakReferenceMessenger.Default.Send<AuthenticatedMessage>();
 		}
 	}

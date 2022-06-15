@@ -1,14 +1,14 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Messaging;
-using Warehouse.Shared.Sockets.Clients;
 using Warehouse.Server.Manager.Messages;
+using Warehouse.Shared.TcpClients;
 
 namespace Warehouse.Server.Manager.ViewModels;
 
 public class SocketConnectionViewModel : ObservableObject, ISocketConnectionViewModel
 {
-	private readonly IClientSocket socket;
+	private readonly ITcpClientFactory tcpClientFactory;
 	private string hostname;
 	private string port;
 	private string hostnameError;
@@ -33,9 +33,9 @@ public class SocketConnectionViewModel : ObservableObject, ISocketConnectionView
 		get => error;
 		set => SetProperty(ref error, value);
 	}
-	public SocketConnectionViewModel(IClientSocket socket)
+	public SocketConnectionViewModel(ITcpClientFactory tcpClientFactory)
 	{
-		this.socket = socket;
+		this.tcpClientFactory = tcpClientFactory;
 		hostname = "";
 		hostnameError = "";
 		port = "";
@@ -74,19 +74,18 @@ public class SocketConnectionViewModel : ObservableObject, ISocketConnectionView
 		}
 		return true;
 	}
-	public async void Connect(object sender, RoutedEventArgs e)
+	public void Connect(object sender, RoutedEventArgs e)
 	{
 		if (!ValidateForm())
 		{
 			return;
 		}
-		var ok = await socket.Connect(hostname, int.Parse(port));
-		if (!ok)
+		var client = tcpClientFactory.GetService(hostname, int.Parse(port));
+		if (!client.Connect())
 		{
 			Error = $"Could not connect to {hostname}:{port}";
 			return;
 		}
-		socket.BeginReceive();
 		WeakReferenceMessenger.Default.Send(new SocketConnectedMessage());
 	}
 }

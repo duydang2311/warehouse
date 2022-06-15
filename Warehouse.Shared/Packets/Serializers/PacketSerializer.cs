@@ -14,6 +14,17 @@ public class PacketSerializer : IPacketSerializer
 		this.packetHeaderFactory = packetHeaderFactory;
 	}
 
+	public byte[]? TrySerialize(IPacketHeader header)
+	{
+		try
+		{
+			return MessagePackSerializer.Serialize(header);
+		}
+		catch
+		{
+			return default;
+		}
+	}
 	public IPacketHeader? TrySerialize<T>(T packet) where T : IPacket
 	{
 		try
@@ -25,7 +36,7 @@ public class PacketSerializer : IPacketSerializer
 		}
 		catch
 		{
-			return default(IPacketHeader?);
+			return default;
 		}
 	}
 
@@ -34,12 +45,12 @@ public class PacketSerializer : IPacketSerializer
 		try
 		{
 			using var stream = new MemoryStream();
-			await MessagePackSerializer.SerializeAsync<T>(stream, packet);
+			await MessagePackSerializer.SerializeAsync(stream, packet);
 			return packetHeaderFactory.GetService(identifier.TryIdentify<T>(), stream.ToArray());
 		}
 		catch
 		{
-			return default(IPacketHeader?);
+			return default;
 		}
 	}
 
@@ -53,7 +64,7 @@ public class PacketSerializer : IPacketSerializer
 		}
 		catch
 		{
-			return default(Stream?);
+			return default;
 		}
 	}
 
@@ -65,7 +76,7 @@ public class PacketSerializer : IPacketSerializer
 		}
 		catch
 		{
-			return default(T?);
+			return default;
 		}
 	}
 
@@ -78,7 +89,7 @@ public class PacketSerializer : IPacketSerializer
 		}
 		catch
 		{
-			return default(T?);
+			return default;
 		}
 	}
 
@@ -91,7 +102,7 @@ public class PacketSerializer : IPacketSerializer
 		}
 		catch
 		{
-			return default(IPacketHeader?);
+			return default;
 		}
 	}
 
@@ -109,7 +120,7 @@ public class PacketSerializer : IPacketSerializer
 #if DEBUG
 			throw;
 #else
-            return default(T?);
+            return default;
 #endif
 		}
 	}

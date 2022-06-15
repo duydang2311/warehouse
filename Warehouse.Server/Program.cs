@@ -4,6 +4,7 @@ using Warehouse.Server.Databases;
 using Warehouse.Server.Commands;
 using Warehouse.Shared.Packets;
 using Warehouse.Shared.Packets.Serializers;
+using Warehouse.Shared.TcpServers;
 
 namespace Warehouse.Server;
 
@@ -25,7 +26,10 @@ public partial class Program
 			.WithPackets()
 			.WithDatabases()
 			.WithApplications()
-			.WithCommands();
+			.WithCommands()
+			.WithTcpClients()
+			.WithTcpServers()
+			.AddSingleton(provider => provider.GetRequiredService<ITcpServerFactory>().GetService("127.0.0.1", 4242));
 		Provider = services.BuildServiceProvider();
 		services.AddSingleton<IServiceProvider, ServiceProvider>(p => Provider);
 
@@ -51,7 +55,7 @@ public partial class Program
 		App.TryAddCommand(commandFactory.GetService("quit", "Exit the program (same with 'exit')", ExitCommand));
 		App.TryAddCommand(commandFactory.GetAsyncService("register", "Register a staff account", RegisterCommand));
 		App.HandlePacketAsync<IAuthenticationPacket>(HandleAuthenticationPacket);
-		App.BeginListen("localhost", 4242);
+		App.Start();
 		while (true)
 			await App.ReadCommand();
 	}

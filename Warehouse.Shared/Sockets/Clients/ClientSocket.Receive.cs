@@ -27,23 +27,26 @@ public partial class ClientSocket
 			RemoteDisconnect();
 			return;
 		}
-		int offset = 0;
+		long offset = 0;
 		long position = 0;
 		do
 		{
-			using var stream = new MemoryStream(receiveBuffer, offset, bytes - offset);
+			using var stream = new MemoryStream(receiveBuffer, (int)offset, bytes - (int)offset);
 			var packet = await serializer.TryDeserializeAsync(stream);
 			if (packet is null)
 			{
 				Console.WriteLine("Bad packet");
 				break;
 			}
+			System.Diagnostics.Debug.WriteLine("Receive " + packet.Identity);
 			if (Received is not null)
 			{
 				Received(this, packet);
 			}
+			offset += position;
 			position = stream.Position;
 		} while (offset + position < bytes);
+		System.Diagnostics.Debug.WriteLine("Done?");
 		BeginReceive(receiveBuffer, ReceiveCallback);
 	}
 }

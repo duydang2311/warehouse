@@ -2,6 +2,7 @@ namespace Warehouse.Shared.Packets.Serializers;
 
 public interface IPacketSerializer
 {
+	byte[]? TrySerialize(IPacketHeader header);
 	IPacketHeader? TrySerialize<T>(T Packet) where T : IPacket;
 	Task<IPacketHeader?> TrySerializeAsync<T>(T Packet) where T : IPacket;
 	Task<Stream?> TrySerializeAsync(IPacketHeader header);

@@ -1,13 +1,14 @@
 ﻿using Microsoft.Data.SqlClient;
-using Warehouse.Server.SocketHandlers;
 using Warehouse.Shared.Packets;
+using Warehouse.Shared.TcpServers;
 
 namespace Warehouse.Server;
 
 public partial class Program
 {
-	private static async Task HandleAuthenticationPacket(ISocketHandler handler, IAuthenticationPacket packet)
+	private static async Task HandleAuthenticationPacket(TcpSession sender, IAuthenticationPacket packet)
 	{
+		Console.WriteLine("handle auth packet");
 		using var connection = await Database.TryGetConnectionAsync(App.RoleAuth);
 		if (connection is null)
 		{
@@ -17,8 +18,10 @@ public partial class Program
 		cmd.CommandType = System.Data.CommandType.StoredProcedure;
 		cmd.Parameters.AddWithValue("@username", packet.Username);
 		cmd.Parameters.AddWithValue("@password", packet.Password);
-		var ok = (bool)(await cmd.ExecuteScalarAsync())!;
-		await handler.Send((await PacketSerializer.TrySerializeAsync(PacketFactory.GetAuthenticationResponsePacket(ok)))!);
+		Console.WriteLine($"{packet.Username}, {packet.Password}");
+		// var ok = (bool)(await cmd.ExecuteScalarAsync())!;
+		var ok = true;
+		await sender.SendAsync(PacketSerializer.TrySerialize(PacketFactory.GetAuthenticationResponsePacket(ok))!);
 	}
 }
 
