@@ -25,11 +25,15 @@ public sealed partial class App : Application
 			.AddSingleton<MainWindow>()
 			.AddSingleton<DatabaseConnectionPage>()
 			.AddSingleton<AuthenticationPage>()
+			.AddSingleton<MainPage>()
 			.AddSingleton<HomePage>()
+			.AddSingleton<InStockPage>()
+			.AddSingleton<OutOfStockPage>()
 			.AddSingleton<IMainWindowViewModel, MainWindowViewModel>()
 			.AddSingleton<IDatabaseConnectionViewModel, DatabaseConnectionViewModel>()
 			.AddSingleton<IAuthenticationPageViewModel, AuthenticationPageViewModel>()
-			.AddSingleton<IHomePageViewModel, HomePageViewModel>();
+			.AddSingleton<IMainViewModel, MainViewModel>()
+			.AddSingleton<IInStockViewModel, InStockViewModel>();
 		return services.BuildServiceProvider();
 	}
 	protected override void OnLaunched(LaunchActivatedEventArgs args)

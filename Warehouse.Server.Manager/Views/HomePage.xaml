@@ -8,18 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <NavigationView
-        SelectedItem="{Binding SelectedNavViewItem, Mode=TwoWay}"
-        Header="{Binding NavViewHeader}"
-    >
-        <NavigationView.MenuItems>
-            <NavigationViewItem IsSelected="True" Icon="Home" Content="Home" Tag="Home" />
-            <NavigationViewItem Icon="SelectAll" Content="In stock" Tag="In stock" />
-            <NavigationViewItem Icon="NewWindow" Content="On stock" Tag="On stock" />
-            <NavigationViewItem Icon="Clear" Content="Out of stock" Tag="Out of stock" />
-        </NavigationView.MenuItems>
-        <ScrollViewer>
-            <Frame x:Name="frame"></Frame>
-        </ScrollViewer>
-    </NavigationView>
+	<Grid>
+		<TextBlock Text="Couldn't do this in time :(" />
+	</Grid>
 </Page>

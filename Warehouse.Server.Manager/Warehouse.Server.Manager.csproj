@@ -15,7 +15,7 @@
 		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
 		<PackageCertificateThumbprint>76BEE04CFE261B0D6219DDB00E644E9FB9450783</PackageCertificateThumbprint>
 		<AppxPackageSigningTimestampDigestAlgorithm>SHA512</AppxPackageSigningTimestampDigestAlgorithm>
-		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
 		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<AppxBundle>Always</AppxBundle>
@@ -30,6 +30,9 @@
 	<ItemGroup>
 		<None Remove="Views\AuthenticationPage.xaml" />
 		<None Remove="Views\DatabaseConnectionPage.xaml" />
+		<None Remove="Views\HomePage.xaml" />
+		<None Remove="Views\InStockPage.xaml" />
+		<None Remove="Views\OutOfStockPage.xaml" />
 		<None Remove="Views\TitleBarPage.xaml" />
 	</ItemGroup>
 
@@ -45,6 +48,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.0-preview2.22096.2" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.44.0" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-preview.4.22229.4" />
 		<PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
@@ -71,6 +75,21 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Warehouse.Shared\Warehouse.Shared.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\OutOfStockPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\InStockPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\HomePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
 	</ItemGroup>
 	<ItemGroup>
 		<Page Update="Views\DatabaseConnectionPage.xaml">

@@ -10,7 +10,7 @@ public class Database : IDatabase
 		ConnectionStringBuilder = new SqlConnectionStringBuilder()
 		{
 			InitialCatalog = "GearStore",
-			TrustServerCertificate = true,
+			TrustServerCertificate = true
 		};
 	}
 	public SqlConnection GetConnection(IRoleAuth auth)
@@ -25,6 +25,11 @@ public class Database : IDatabase
 		{
 			throw new ArgumentException("Wrong credentials");
 		}
+		using var cmdsetapprole = new SqlCommand("sp_setapprole", connection);
+		cmdsetapprole.CommandType = System.Data.CommandType.StoredProcedure;
+		cmdsetapprole.Parameters.AddWithValue("@rolename", auth.Name);
+		cmdsetapprole.Parameters.AddWithValue("@password", auth.Password);
+		cmdsetapprole.ExecuteNonQuery();
 		return connection;
 	}
 	public async Task<SqlConnection> GetConnectionAsync(IRoleAuth auth)
@@ -38,6 +43,11 @@ public class Database : IDatabase
 		{
 			throw new ArgumentException("Wrong credentials");
 		}
+		using var cmdsetapprole = new SqlCommand("sp_setapprole", connection);
+		cmdsetapprole.CommandType = System.Data.CommandType.StoredProcedure;
+		cmdsetapprole.Parameters.AddWithValue("@rolename", auth.Name);
+		cmdsetapprole.Parameters.AddWithValue("@password", auth.Password);
+		await cmdsetapprole.ExecuteNonQueryAsync();
 		return connection;
 	}
 	public SqlConnection? TryGetConnection(IRoleAuth auth)
@@ -61,6 +71,11 @@ public class Database : IDatabase
 			{
 				return null;
 			}
+			using var cmdsetapprole = new SqlCommand("sp_setapprole", connection);
+			cmdsetapprole.CommandType = System.Data.CommandType.StoredProcedure;
+			cmdsetapprole.Parameters.AddWithValue("@rolename", auth.Name);
+			cmdsetapprole.Parameters.AddWithValue("@password", auth.Password);
+			cmdsetapprole.ExecuteNonQuery();
 			return connection;
 		}
 		catch
@@ -84,17 +99,26 @@ public class Database : IDatabase
 		try
 		{
 			await connection.OpenAsync();
-			using var cmd = new SqlCommand("select dbo.udf_TryLoginToApplicationRoles(@rolename, @password)", connection);
+			System.Diagnostics.Debug.WriteLine("Before");
+			var cmd = new SqlCommand("select dbo.udf_TryLoginToApplicationRoles(@rolename, @password)", connection);
+			System.Diagnostics.Debug.WriteLine("After");
 			cmd.Parameters.AddWithValue("@rolename", auth.Name);
 			cmd.Parameters.AddWithValue("@password", auth.Password);
 			if (!(bool)(await cmd.ExecuteScalarAsync())!)
 			{
 				return null;
 			}
+			cmd.Dispose();
+			using var cmdsetapprole = new SqlCommand("sp_setapprole", connection);
+			cmdsetapprole.CommandType = System.Data.CommandType.StoredProcedure;
+			cmdsetapprole.Parameters.AddWithValue("@rolename", auth.Name);
+			cmdsetapprole.Parameters.AddWithValue("@password", auth.Password);
+			await cmdsetapprole.ExecuteNonQueryAsync();
 			return connection;
 		}
 		catch
 		{
+			throw;
 			await connection.CloseAsync();
 			connection.Dispose();
 			return default;

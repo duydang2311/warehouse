@@ -8,9 +8,8 @@ namespace Warehouse.Server.Manager.ViewModels;
 
 public class MainWindowViewModel : ObservableObject, IMainWindowViewModel
 {
-	private readonly DatabaseConnectionPage databaseConnectionPage;
 	private readonly AuthenticationPage authenticationPage;
-	private readonly HomePage homePage;
+	private readonly MainPage homePage;
 	private Page? content;
 	public Page? Content
 	{
@@ -20,10 +19,9 @@ public class MainWindowViewModel : ObservableObject, IMainWindowViewModel
 	public MainWindowViewModel(
 		DatabaseConnectionPage databaseConnectionPage,
 		AuthenticationPage authenticationPage,
-		HomePage homePage
+		MainPage homePage
 	)
 	{
-		this.databaseConnectionPage = databaseConnectionPage;
 		this.authenticationPage = authenticationPage;
 		this.homePage = homePage;
 		Content = databaseConnectionPage;

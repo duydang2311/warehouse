@@ -92,6 +92,9 @@ public class DatabaseConnectionViewModel : ObservableObject, IDatabaseConnection
 	}
 	public async void Connect(object sender, RoutedEventArgs e)
 	{
+		//Server = "DUYDANG";
+		//Login = "gearstore";
+		//Password = "12345";
 		Server = Server.Trim();
 		Login = Login.Trim();
 		Password = Password.Trim();
@@ -104,7 +107,8 @@ public class DatabaseConnectionViewModel : ObservableObject, IDatabaseConnection
 		database.ConnectionStringBuilder.Password = password;
 		PasswordError = "Connecting to the database...";
 		ButtonContent = new ProgressRing() { Height = 25, Width = 25 };
-		if (await database.TryGetConnectionAsync(roleAuth) is null)
+		using var connection = await database.TryGetConnectionAsync(roleAuth).ConfigureAwait(true);
+		if (connection is null)
 		{
 			ButtonContent = "Connect";
 			PasswordError = "Wrong credentials, database connection failed";

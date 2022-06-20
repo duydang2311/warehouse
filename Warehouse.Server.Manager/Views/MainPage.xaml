@@ -1,0 +1,46 @@
+﻿<Page
+    x:Class="Warehouse.Server.Manager.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Warehouse.Server.Manager.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	<NavigationView
+		x:Name="nav"
+		SelectedItem="{Binding SelectedNavViewItem, Mode=TwoWay}"
+		IsBackButtonVisible="Collapsed"
+		IsSettingsVisible="False"
+    >
+		<NavigationView.ContentTransitions>
+			<TransitionCollection>
+				<PopupThemeTransition />
+			</TransitionCollection>
+		</NavigationView.ContentTransitions>
+		<NavigationView.MenuItems>
+			<NavigationViewItem Icon="Home" IsSelected="True" Tag="{Binding HomeTag, Mode=OneTime}" Content="Home" />
+			<NavigationViewItem Icon="SelectAll" Tag="{Binding InStockTag, Mode=OneTime}" Content="In stock" />
+			<NavigationViewItem Icon="Clear" Tag="{Binding OutOfStockTag, Mode=OneTime}" Content="Out of stock" />
+		</NavigationView.MenuItems>
+		<ScrollViewer
+			Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+			Padding="30"
+		>
+			<StackPanel Orientation="Vertical">
+				<TextBlock 
+					Text="{Binding Header, Mode=OneWay}"
+					FontSize="24"
+					FontWeight="Medium"
+				/>
+				<Frame x:Name="frame" Content="{Binding SelectedNavViewItem.Tag}">
+					<Frame.ContentTransitions>
+						<TransitionCollection>
+							<PopupThemeTransition />
+						</TransitionCollection>
+					</Frame.ContentTransitions>
+				</Frame>
+			</StackPanel>
+		</ScrollViewer>
+	</NavigationView>
+</Page>

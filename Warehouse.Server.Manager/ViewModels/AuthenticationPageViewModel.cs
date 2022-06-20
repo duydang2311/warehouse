@@ -68,13 +68,15 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 	}
 	public async void Login(object sender, RoutedEventArgs e)
 	{
+		//Username = "duydang";
+		//Password = "12345";
 		Username = Username.Trim();
 		if (!ValidateForm())
 		{
 			return;
 		}
 		ButtonContent = new ProgressRing { Width = 25, Height = 25 };
-		using var connection = await database.TryGetConnectionAsync(roleAuth);
+		using var connection = await database.TryGetConnectionAsync(roleAuth).ConfigureAwait(true);
 		if (connection is null)
 		{
 			ButtonContent = "Login";
@@ -85,7 +87,7 @@ public class AuthenticationPageViewModel : ObservableObject, IAuthenticationPage
 		using var cmd = new SqlCommand("select dbo.udf_TryLoginToStaffAccount(@name, @password)", connection);
 		cmd.Parameters.AddWithValue("@name", Username);
 		cmd.Parameters.AddWithValue("@password", Password);
-		var ok = (bool)(await cmd.ExecuteScalarAsync())!;
+		var ok = (bool)(await cmd.ExecuteScalarAsync().ConfigureAwait(true))!;
 		ButtonContent = "Login";
 		if (!ok)
 		{
