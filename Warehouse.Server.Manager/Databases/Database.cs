@@ -118,7 +118,6 @@ public class Database : IDatabase
 		}
 		catch
 		{
-			throw;
 			await connection.CloseAsync();
 			connection.Dispose();
 			return default;

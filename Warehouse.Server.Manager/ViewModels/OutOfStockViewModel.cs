@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Warehouse.Server.Manager.ViewModels;
 
-public class InStockViewModel : ObservableObject, IInStockViewModel
+public class OutOfStockViewModel : ObservableObject, IOutOfStockViewModel
 {
 	private readonly IDatabase database;
 	private readonly IRoleAuth roleAuth;
@@ -19,14 +19,14 @@ public class InStockViewModel : ObservableObject, IInStockViewModel
 		get => products;
 		set => SetProperty(ref products, value);
 	}
-	public InStockViewModel(IDatabase database, IRoleAuth roleAuth)
+	public OutOfStockViewModel(IDatabase database, IRoleAuth roleAuth)
 	{
 		this.database = database;
 		this.roleAuth = roleAuth;
 		products = new LinkedList<IProductItemModel>();
 		WeakReferenceMessenger.Default.Register(this);
 	}
-	public async void Receive(InStockNavigatedMessage message)
+	public async void Receive(OutOfStockNavigatedMessage message)
 	{
 		using var connection = await database.TryGetConnectionAsync(roleAuth);
 		if (connection is null)

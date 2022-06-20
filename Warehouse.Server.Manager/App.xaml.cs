@@ -33,7 +33,9 @@ public sealed partial class App : Application
 			.AddSingleton<IDatabaseConnectionViewModel, DatabaseConnectionViewModel>()
 			.AddSingleton<IAuthenticationPageViewModel, AuthenticationPageViewModel>()
 			.AddSingleton<IMainViewModel, MainViewModel>()
-			.AddSingleton<IInStockViewModel, InStockViewModel>();
+			.AddSingleton<IInStockViewModel, InStockViewModel>()
+			.AddSingleton<IHomeViewModel, HomeViewModel>()
+			.AddSingleton<IOutOfStockViewModel, OutOfStockViewModel>();
 		return services.BuildServiceProvider();
 	}
 	protected override void OnLaunched(LaunchActivatedEventArgs args)

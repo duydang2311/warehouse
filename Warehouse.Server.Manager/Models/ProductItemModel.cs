@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.Globalization;
 
 namespace Warehouse.Server.Manager.Models;
@@ -20,6 +21,6 @@ public class ProductItemModel : IProductItemModel
 		Name = "";
 		Brand = "";
 		Category = "";
-		Image = null!;
+		Image = new BitmapImage(new Uri("https://www.bjs-performance.com/wp-content/uploads/2018/11/blog-ph.jpg"));
 	}
 }

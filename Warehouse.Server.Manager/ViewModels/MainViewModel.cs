@@ -26,6 +26,14 @@ public class MainViewModel : ObservableObject, IMainViewModel
 			{
 				WeakReferenceMessenger.Default.Send<InStockNavigatedMessage>();
 			}
+			else if (selectedNavViewItem.Tag is HomePage)
+			{
+				WeakReferenceMessenger.Default.Send<HomeNavigatedMessage>();
+			}
+			else if (selectedNavViewItem.Tag is OutOfStockPage)
+			{
+				WeakReferenceMessenger.Default.Send<OutOfStockNavigatedMessage>();
+			}
 		}
 	}
 	public Page HomeTag { get; }
